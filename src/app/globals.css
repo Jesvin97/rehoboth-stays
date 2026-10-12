@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-ink: #1c2b24;
+  --color-ink-soft: #3d4e44;
+  --color-muted: #56675d;
+  --color-line: #d5ded7;
+  --color-line-soft: #e2e8e3;
+  --color-mist: #eef2ee;
+  --color-paper: #f5f7f5;
+  --color-sage: #c9d3ca;
+  --color-forest: #3e5a4c;
+  --color-teal: #1f6b66;
+  --color-teal-dark: #164e4a;
+  --color-teal-tint: #e4f0ec;
+  --color-teal-wash: #f2f8f6;
+  --color-sand: #f6e7c8;
+  --color-sand-ink: #6b4a0c;
+  --color-gold: #c98a1b;
+  --color-gold-light: #f2d9a6;
+  --color-rust: #a23b1e;
+  --color-error-bg: #fbeae3;
+  --color-error-ink: #7a2e14;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: "Figtree Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --animate-fade-up: fade-up 0.4s ease both;
+  --animate-pop: pop 0.2s ease both;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to { opacity: 1; transform: none; }
   }
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1280px] px-4 sm:px-6;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-teal;
+  }
+  .h2 {
+    @apply font-display text-[clamp(30px,3.4vw,46px)] font-bold leading-[1.05] text-ink;
+  }
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center rounded-full bg-teal px-5 font-semibold text-white transition-colors hover:bg-teal-dark active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-outline {
+    @apply inline-flex min-h-11 items-center justify-center rounded-full border-[1.5px] border-teal px-5 font-semibold text-teal transition-colors hover:bg-teal-tint;
+  }
+  .field {
+    @apply min-h-[46px] w-full rounded-[10px] border border-[#cbd5cd] bg-white px-3 py-2.5 text-base text-ink outline-none transition-shadow focus:border-teal focus:shadow-[0_0_0_3px_rgba(31,107,102,0.18)];
+  }
+  .field-label {
+    @apply flex flex-col gap-1.5 text-[13px] font-semibold text-[#4a5c52];
+  }
+  .card {
+    @apply flex flex-col gap-[18px] rounded-[18px] border border-line bg-white p-6;
+  }
+  .lift {
+    @apply transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_16px_34px_rgba(28,43,36,0.14)];
+  }
 }

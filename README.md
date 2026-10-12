@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rehoboth Stays — website front end
 
-## Getting Started
+Next.js 15 (App Router) + TypeScript + Tailwind CSS v4. Booking with full payment through Razorpay.
 
-First, run the development server:
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # optional — the site runs without keys
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Without Razorpay keys the checkout runs in **mock mode**: a test payment window lets you simulate a successful or failed payment, so the whole flow can be demoed. Without an OTP provider, any 4-digit code is accepted.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Pages
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route | What it is |
+| --- | --- |
+| `/` | Homepage — hero slideshow + availability search, story, rooms (filter, save), experiences, food, offers (copy code), around us, reviews, FAQ, WhatsApp chat |
+| `/rooms` | All rooms with date and guest search |
+| `/rooms/[slug]` | Room detail — gallery, rate plans, add-ons, live price card |
+| `/book` | Checkout — edit trip, OTP login, guest details, GST invoice, coupons, full payment via Razorpay, cancellation timeline |
+| `/book/confirmed` | Confirmation |
+| `/policies` | Payment & cancellation, house rules, privacy |
 
-## Learn More
+## Where to edit content
 
-To learn more about Next.js, take a look at the following resources:
+Everything in `[brackets]` is placeholder copy.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `src/lib/site.ts` — name, phone, WhatsApp number, address, hosts
+- `src/lib/rooms.ts` — rooms, **nightly rates (sample values)**, capacity, extra-adult charge
+- `src/lib/pricing.ts` — add-ons, coupon codes, GST rate
+- `src/lib/content.ts` — hero captions, experiences, nearby places, reviews, FAQs, house rules
+- `src/lib/cancellation.ts` — refund rules (counted from booking date: 50% within 2 days, 25% until day 4, none from day 5)
+- Photos: replace the `<Photo>` placeholders with `next/image` once photos are in `public/photos/`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Payments (Razorpay)
 
-## Deploy on Vercel
+1. Add `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` to `.env.local` (test keys first).
+2. `POST /api/razorpay/order` recalculates the price on the server and creates an order for the full amount.
+3. The browser opens Razorpay Checkout; on success `POST /api/razorpay/verify` checks the signature.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Still needed from a backend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+These are marked `TODO(backend)` in the code:
+
+- Live room availability before taking payment (`api/razorpay/order`)
+- Saving bookings, blocking dates, and sending WhatsApp/email confirmations (`api/razorpay/verify`)
+- A Razorpay `payment.captured` webhook, so bookings confirm even if the guest closes the tab
+- A real OTP provider (`api/otp/*`)
+- Loading the confirmation page from the saved booking instead of the URL
+- Processing refunds per the cancellation policy
+
+## Deploy
+
+Works on Vercel out of the box: import the repo and add the environment variables.
