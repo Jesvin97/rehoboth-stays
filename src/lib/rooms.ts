@@ -50,7 +50,7 @@ export const rooms: Room[] = [
     tags: ["couples", "workation"],
     rates: { bb: 4500, meals: 6200 },
     photos: [
-      { label: "Room · hero photo", tone: "#b8c6bc" },
+      { label: "Heritage Room", tone: "#b8c6bc", src: "/photos/heritage-room.jpg" },
       { label: "Bed", tone: "#c9d3ca" },
       { label: "Bathroom", tone: "#bfcbc9" },
       { label: "View from window", tone: "#c3cdb7" },
@@ -75,7 +75,7 @@ export const rooms: Room[] = [
     tags: ["couples", "families"],
     rates: { bb: 5500, meals: 7400 },
     photos: [
-      { label: "Cottage · exterior", tone: "#b5c4b1" },
+      { label: "Plantation Cottage", tone: "#b5c4b1", src: "/photos/plantation-cottage.jpg" },
       { label: "Bedroom", tone: "#c9d3ca" },
       { label: "Sit-out", tone: "#c6cbb6" },
       { label: "Bathroom", tone: "#bfcbc9" },
@@ -100,7 +100,7 @@ export const rooms: Room[] = [
     tags: ["families"],
     rates: { bb: 7800, meals: 10600 },
     photos: [
-      { label: "Suite · lounge", tone: "#c2ccc3" },
+      { label: "Family Suite lounge", tone: "#c2ccc3", src: "/photos/family-suite.jpg" },
       { label: "Bedroom 1", tone: "#c9d3ca" },
       { label: "Bedroom 2", tone: "#bfcbc9" },
       { label: "Bathroom", tone: "#c3cdb7" },
@@ -125,7 +125,7 @@ export const rooms: Room[] = [
     tags: ["families", "workation"],
     rates: { bb: 21000, meals: 28000 },
     photos: [
-      { label: "The house", tone: "#b5c4b1" },
+      { label: "The house", tone: "#b5c4b1", src: "/photos/house-at-dawn.jpg" },
       { label: "Dining hall", tone: "#c9d3ca" },
       { label: "Verandah", tone: "#c6cbb6" },
       { label: "Rooms", tone: "#bfcbc9" },

@@ -2,8 +2,8 @@
 
 /** `src` is a file in /public/photos; without it the slide shows a labelled placeholder. */
 export const heroSlides: { label: string; caption: string; tone: string; src?: string }[] = [
-  { label: "The house at dawn", caption: "[Morning mist over the estate]", tone: "#3e5a4c" },
-  { label: "Breakfast on the verandah", caption: "[Breakfast on the verandah, from our kitchen]", tone: "#4b5e3f" },
+  { label: "The house at dawn", caption: "[Morning mist over the estate]", tone: "#3e5a4c", src: "/photos/house-at-dawn.jpg" },
+  { label: "Breakfast on the verandah", caption: "[Breakfast on the verandah, from our kitchen]", tone: "#4b5e3f", src: "/photos/breakfast-verandah.jpg" },
   { label: "The river nearby", caption: "[Five minutes' walk to the river]", tone: "#2f5257" },
   { label: "Plantation walk", caption: "[Walk the coffee rows with your host]", tone: "#56503a" },
 ];
