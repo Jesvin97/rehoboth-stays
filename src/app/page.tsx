@@ -3,7 +3,6 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { Hero } from "@/components/home/Hero";
 import { TrustStrip } from "@/components/home/TrustStrip";
 import { RoomsSection } from "@/components/home/RoomsSection";
-import { Offers } from "@/components/home/Offers";
 import { Experiences } from "@/components/home/Experiences";
 import { AroundUs } from "@/components/home/AroundUs";
 import { Reviews } from "@/components/home/Reviews";
@@ -79,12 +78,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Offers */}
-      <section id="offers" className="bg-mist">
-        <div className="container-x py-24">
-          <Offers />
-        </div>
-      </section>
 
       {/* Experiences */}
       <section id="experiences">
@@ -123,19 +116,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Wellness */}
-      <section id="wellness" className="relative overflow-hidden">
-        <Photo label="Ayurveda treatment room" tone="#93a596" dark className="absolute inset-0" align="start" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,24,20,0.82)_0%,rgba(15,24,20,0.45)_60%,rgba(15,24,20,0.1)_100%)]" aria-hidden="true" />
-        <div className="container-x relative flex min-h-[520px] items-center py-24">
-          <div className="flex max-w-[520px] flex-col gap-5 text-white">
-            <p className="eyebrow text-gold-light">Wellness</p>
-            <h2 className="h2 text-white">Ayurveda, at home</h2>
-            <p className="text-[17px] text-white/85">[A certified therapist visits the house for abhyanga, shirodhara or a simple head massage. Pair it with morning yoga on the verandah.]</p>
-            <a href="#callback" className="btn-light self-start">Ask about treatments</a>
-          </div>
-        </div>
-      </section>
 
       {/* Around us */}
       <section id="around" className="bg-paper">

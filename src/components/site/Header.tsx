@@ -11,8 +11,6 @@ const nav = [
   { href: "/rooms", label: "Stay" },
   { href: "/#experiences", label: "Experiences" },
   { href: "/#dining", label: "Dining" },
-  { href: "/#wellness", label: "Wellness" },
-  { href: "/#offers", label: "Offers" },
   { href: "/#around", label: "Getting Here" },
 ];
 

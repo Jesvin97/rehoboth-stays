@@ -12,7 +12,7 @@ export function Newsletter() {
   const [err, setErr] = useState("");
 
   if (done) {
-    return <p className="animate-fade-up text-gold-light" role="status">Thank you — we&apos;ll write when the monsoon offers open.</p>;
+    return <p className="animate-fade-up text-gold-light" role="status">Thank you — we&apos;ll write a few times a year.</p>;
   }
 
   return (

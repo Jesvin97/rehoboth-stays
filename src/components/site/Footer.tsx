@@ -4,8 +4,8 @@ import { Logo } from "./Logo";
 import { Newsletter } from "./Newsletter";
 
 const cols = [
-  { title: "Stay", links: [{ href: "/rooms", label: "Rooms & cottages" }, { href: "/#offers", label: "Offers" }, { href: "/rooms/whole-home", label: "Book the whole home" }] },
-  { title: "Discover", links: [{ href: "/#experiences", label: "Experiences" }, { href: "/#dining", label: "Dining" }, { href: "/#wellness", label: "Ayurveda" }, { href: "/#around", label: "Getting here" }] },
+  { title: "Stay", links: [{ href: "/rooms", label: "Rooms & cottages" }, { href: "/rooms/whole-home", label: "Book the whole home" }] },
+  { title: "Discover", links: [{ href: "/#experiences", label: "Experiences" }, { href: "/#dining", label: "Dining" }, { href: "/#around", label: "Getting here" }] },
   { title: "Help", links: [{ href: "/#faq", label: "FAQs" }, { href: "/policies#cancellation", label: "Cancellation & refunds" }, { href: "/policies#rules", label: "House rules" }, { href: "/policies#privacy", label: "Privacy" }] },
 ];
 
@@ -16,7 +16,7 @@ export function Footer() {
         <div className="container-x flex flex-col items-start justify-between gap-6 py-12 lg:flex-row lg:items-center">
           <div className="flex flex-col gap-2">
             <p className="text-[12px] font-medium uppercase tracking-[0.28em] text-gold-light">Letters from Rehoboth</p>
-            <p className="font-display text-[28px] font-medium leading-tight text-white">Seasonal offers and news from the estate, a few times a year.</p>
+            <p className="font-display text-[28px] font-medium leading-tight text-white">Seasonal news from the estate, a few times a year.</p>
           </div>
           <Newsletter />
         </div>
