@@ -54,7 +54,7 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
 
           <div className="card w-full gap-3 text-left">
             <div className="flex items-center gap-3.5 border-b border-line-soft pb-3.5">
-              <Photo label={room.photos[0].label} tone={room.photos[0].tone} className="h-[72px] w-24 shrink-0 rounded-[3px] text-[10px] [&>div]:p-2" />
+              <Photo label={room.photos[0].label} src={room.photos[0].src} tone={room.photos[0].tone} className="h-[72px] w-24 shrink-0 rounded-[3px] text-[10px] [&>div]:p-2" />
               <div>
                 <strong className="text-lg">{room.name}</strong>
                 <div className="text-sm text-muted">{plan.name} · Booking ID {ref}</div>

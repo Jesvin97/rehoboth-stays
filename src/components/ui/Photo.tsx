@@ -1,22 +1,44 @@
+import Image from "next/image";
+
 /**
- * Labelled stand-in for a real photograph. Replace each usage with
- * next/image once the client's photos are in /public/photos.
+ * A photograph slot. With `src` it shows the real image (from /public/photos);
+ * without one it shows a labelled stand-in in the slot's tone.
  */
 export function Photo({
   label,
+  src,
   tone = "#c9d3ca",
   className = "",
   dark = false,
   zoom = false,
   align = "end",
+  sizes = "(max-width: 768px) 100vw, 50vw",
+  priority = false,
 }: {
   label?: string;
+  src?: string;
   tone?: string;
   className?: string;
   dark?: boolean;
   zoom?: boolean;
   align?: "start" | "end";
+  sizes?: string;
+  priority?: boolean;
 }) {
+  if (src) {
+    return (
+      <div className={`relative overflow-hidden ${className}`} style={{ backgroundColor: tone }}>
+        <Image
+          src={src}
+          alt={label ?? ""}
+          fill
+          sizes={sizes}
+          priority={priority}
+          className={`object-cover ${zoom ? "transition-transform duration-700 group-hover:scale-105" : ""}`}
+        />
+      </div>
+    );
+  }
   return (
     <div className={`overflow-hidden ${className}`}>
       <div

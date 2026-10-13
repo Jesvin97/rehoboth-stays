@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -65,18 +66,29 @@ export function Hero() {
   return (
     <section className="relative" aria-roledescription="carousel" aria-label="Photos of the homestay">
       <div className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden bg-forest text-center">
-        {heroSlides.map((s, i) => (
-          <div
-            key={s.label}
-            role="img"
-            aria-label={`Photo: ${s.label}`}
-            aria-hidden={i !== slide}
-            className="absolute inset-0 flex items-start justify-end px-8 pt-36 text-[11px] font-medium uppercase tracking-[0.2em] text-white/55 transition-opacity duration-[1400ms]"
-            style={{ backgroundColor: s.tone, opacity: i === slide ? 1 : 0 }}
-          >
-            [{s.label}]
-          </div>
-        ))}
+        {heroSlides.map((s, i) =>
+          s.src ? (
+            <div
+              key={s.label}
+              aria-hidden={i !== slide}
+              className="absolute inset-0 transition-opacity duration-[1400ms]"
+              style={{ backgroundColor: s.tone, opacity: i === slide ? 1 : 0 }}
+            >
+              <Image src={s.src} alt={s.label} fill priority={i === 0} sizes="100vw" className="object-cover" />
+            </div>
+          ) : (
+            <div
+              key={s.label}
+              role="img"
+              aria-label={`Photo: ${s.label}`}
+              aria-hidden={i !== slide}
+              className="absolute inset-0 flex items-start justify-end px-8 pt-36 text-[11px] font-medium uppercase tracking-[0.2em] text-white/55 transition-opacity duration-[1400ms]"
+              style={{ backgroundColor: s.tone, opacity: i === slide ? 1 : 0 }}
+            >
+              [{s.label}]
+            </div>
+          ),
+        )}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,24,20,0.55)_0%,rgba(15,24,20,0.15)_40%,rgba(15,24,20,0.6)_100%)]" aria-hidden="true" />
 
         <div className="relative flex max-w-[860px] flex-col items-center gap-6 px-4 pb-40 pt-36">

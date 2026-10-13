@@ -45,7 +45,7 @@ export function PriceSummary({
     <div className="flex flex-col gap-3.5">
       <div className="card gap-4">
         <div className="flex items-center gap-3.5">
-          <Photo label={room.photos[0].label} tone={room.photos[0].tone} className="h-[86px] w-[110px] shrink-0 rounded-xl text-[10px] [&>div]:p-2" />
+          <Photo label={room.photos[0].label} src={room.photos[0].src} tone={room.photos[0].tone} className="h-[86px] w-[110px] shrink-0 rounded-xl text-[10px] [&>div]:p-2" />
           <div className="flex flex-col gap-0.5">
             <span className="text-[13px] text-muted">Homestay · {site.region}</span>
             <strong className="text-lg">{room.name}</strong>

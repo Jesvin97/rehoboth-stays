@@ -5,6 +5,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { RoomGallery } from "@/components/rooms/RoomGallery";
 import { RoomBooking } from "@/components/rooms/RoomBooking";
 import { Faq } from "@/components/home/Faq";
+import { Photo } from "@/components/ui/Photo";
 import { amenities, getRoom, rooms } from "@/lib/rooms";
 import { parseSelection, type SearchParams } from "@/lib/booking-params";
 import { faqs, houseRules } from "@/lib/content";
@@ -80,7 +81,7 @@ export default async function RoomPage({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {others.map((r) => (
               <Link key={r.slug} href={`/rooms/${r.slug}`} className="lift flex items-center gap-3.5 rounded-[3px] border border-line p-3 text-ink no-underline">
-                <div className="h-[72px] w-24 shrink-0 rounded-[3px]" style={{ backgroundColor: r.photos[0].tone }} aria-hidden="true" />
+                <Photo src={r.photos[0].src} tone={r.photos[0].tone} className="h-[72px] w-24 shrink-0" sizes="96px" />
                 <div>
                   <strong>{r.name}</strong>
                   <div className="text-sm text-muted">From {inr(r.rates.bb)} / night</div>

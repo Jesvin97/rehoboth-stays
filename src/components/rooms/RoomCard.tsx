@@ -25,7 +25,7 @@ export function RoomCard({
     <article className="group lift animate-fade-up flex flex-col overflow-hidden bg-white shadow-[0_1px_0_var(--color-line)]">
       <div className="relative">
         <Link href={href} tabIndex={-1} aria-hidden="true">
-          <Photo label={room.photos[0].label} tone={room.photos[0].tone} className="aspect-[3/2]" zoom />
+          <Photo label={room.photos[0].label} src={room.photos[0].src} tone={room.photos[0].tone} className="aspect-[3/2]" zoom />
         </Link>
         <span className="absolute left-0 top-4 bg-white/95 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-ink">
           {site.region.split(",")[0]}

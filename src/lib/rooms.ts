@@ -19,7 +19,8 @@ export type Room = {
   bedrooms: number;
   /** Nightly rate per plan, in rupees. SAMPLE values — replace with the client's rates. */
   rates: Record<PlanId, number>;
-  photos: { label: string; tone: string }[];
+  /** `src` is a file in /public/photos; without it the slot shows a labelled placeholder. */
+  photos: { label: string; tone: string; src?: string }[];
 };
 
 export const plans: { id: PlanId; name: string; detail: string }[] = [

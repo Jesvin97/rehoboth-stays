@@ -1,6 +1,7 @@
 /** Homepage and shared content. Bracketed text is placeholder copy. */
 
-export const heroSlides = [
+/** `src` is a file in /public/photos; without it the slide shows a labelled placeholder. */
+export const heroSlides: { label: string; caption: string; tone: string; src?: string }[] = [
   { label: "The house at dawn", caption: "[Morning mist over the estate]", tone: "#3e5a4c" },
   { label: "Breakfast on the verandah", caption: "[Breakfast on the verandah, from our kitchen]", tone: "#4b5e3f" },
   { label: "The river nearby", caption: "[Five minutes' walk to the river]", tone: "#2f5257" },
