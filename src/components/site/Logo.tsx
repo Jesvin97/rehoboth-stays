@@ -3,6 +3,7 @@ import { site } from "@/lib/site";
 
 /** Serif wordmark with a gold monogram. `light` for use over photos / dark bands. */
 export function Logo({ light = false }: { light?: boolean }) {
+  const small = `text-[9px] font-medium uppercase tracking-[0.48em] ${light ? "text-gold-light" : "text-accent"}`;
   return (
     <Link href="/" className={`group flex items-center gap-3 no-underline ${light ? "text-white hover:text-white" : "text-ink hover:text-ink"}`} aria-label={`${site.name} home`}>
       <span
@@ -13,9 +14,10 @@ export function Logo({ light = false }: { light?: boolean }) {
       >
         {site.initial}
       </span>
-      <span className="flex flex-col leading-none">
-        <span className="font-display text-[22px] font-semibold uppercase tracking-[0.2em]">Rehoboth</span>
-        <span className={`mt-1 text-[10px] font-medium uppercase tracking-[0.5em] ${light ? "text-gold-light" : "text-accent"}`}>Stays</span>
+      <span className="flex flex-col leading-none" aria-hidden="true">
+        <span className={small}>Ambattu</span>
+        <span className="my-[3px] font-display text-[22px] font-semibold uppercase tracking-[0.2em]">Rehoboth</span>
+        <span className={small}>Stays</span>
       </span>
     </Link>
   );

@@ -31,7 +31,7 @@ export default function HomePage() {
       {/* Welcome */}
       <section id="story" className="pt-28">
         <div className="container-x flex flex-col gap-16 pb-24">
-          <SectionTitle eyebrow="Welcome to Rehoboth" title="Not a hotel. Our home, opened to a few guests at a time.">
+          <SectionTitle eyebrow="Welcome to Ambattu Rehoboth" title="Not a hotel. Our home, opened to a few guests at a time.">
             [2–3 sentences on the house, the family and the land — when it was built, who lives here, and why you began hosting.]
           </SectionTitle>
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_1fr]">

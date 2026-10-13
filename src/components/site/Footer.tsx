@@ -15,7 +15,7 @@ export function Footer() {
       <div className="border-b border-white/10">
         <div className="container-x flex flex-col items-start justify-between gap-6 py-12 lg:flex-row lg:items-center">
           <div className="flex flex-col gap-2">
-            <p className="text-[12px] font-medium uppercase tracking-[0.28em] text-gold-light">Letters from Rehoboth</p>
+            <p className="text-[12px] font-medium uppercase tracking-[0.28em] text-gold-light">Letters from Ambattu Rehoboth</p>
             <p className="font-display text-[28px] font-medium leading-tight text-white">Seasonal news from the estate, a few times a year.</p>
           </div>
           <Newsletter />

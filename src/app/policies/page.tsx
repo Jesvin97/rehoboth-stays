@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Policies",
-  description: "Cancellation policy, house rules and privacy at Rehoboth Stays.",
+  description: "Cancellation policy, house rules and privacy at Ambattu Rehoboth Stays.",
 };
 
 export default function PoliciesPage() {

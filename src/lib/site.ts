@@ -3,7 +3,7 @@
  * with the client's real information.
  */
 export const site = {
-  name: "Rehoboth Stays",
+  name: "Ambattu Rehoboth Stays",
   initial: "R",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   region: "[Region], Kerala",

@@ -6,7 +6,7 @@ import { parseStay, stayQuery, type SearchParams } from "@/lib/booking-params";
 
 export const metadata: Metadata = {
   title: "Rooms & cottages",
-  description: "Compare the rooms at Rehoboth Stays, check your dates and book direct.",
+  description: "Compare the rooms at Ambattu Rehoboth Stays, check your dates and book direct.",
 };
 
 export default async function RoomsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {

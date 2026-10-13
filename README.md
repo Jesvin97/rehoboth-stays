@@ -1,4 +1,4 @@
-# Rehoboth Stays — website front end
+# Ambattu Rehoboth Stays — website front end
 
 Next.js 15 (App Router) + TypeScript + Tailwind CSS v4. Booking with full payment through Razorpay.
 
