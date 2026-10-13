@@ -31,34 +31,34 @@ export function useSavedRooms() {
   return { saved, toggle };
 }
 
-export function RoomsSection({ query = "" }: { query?: string }) {
+export function RoomsSection({ query = "", centered = false }: { query?: string; centered?: boolean }) {
   const [filter, setFilter] = useState<FilterId>("all");
   const { saved, toggle } = useSavedRooms();
   const list = rooms.filter((r) => filter === "all" || r.tags.includes(filter));
 
   return (
-    <div className="flex flex-col gap-8">
-      <div role="group" aria-label="Filter rooms" className="flex flex-wrap gap-2">
+    <div className="flex flex-col gap-10">
+      <div role="group" aria-label="Filter rooms" className={`flex flex-wrap gap-x-8 gap-y-2 border-b border-line ${centered ? "justify-center" : ""}`}>
         {roomFilters.map((f) => (
           <button
             key={f.id}
             type="button"
             aria-pressed={filter === f.id}
             onClick={() => setFilter(f.id)}
-            className={`min-h-10 rounded-full border-[1.5px] border-teal px-4 text-sm font-semibold transition-colors ${
-              filter === f.id ? "bg-teal text-white" : "bg-white text-teal hover:bg-teal-tint"
+            className={`-mb-px min-h-12 border-b-2 text-[12px] font-medium uppercase tracking-[0.2em] transition-colors ${
+              filter === f.id ? "border-accent text-accent" : "border-transparent text-muted hover:text-ink"
             }`}
           >
             {f.label}
           </button>
         ))}
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-6">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10">
         {list.map((r) => (
           <RoomCard key={r.slug} room={r} query={query} saved={saved.includes(r.slug)} onToggleSave={() => toggle(r.slug)} />
         ))}
       </div>
-      <p className="text-sm text-muted" aria-live="polite">
+      <p className={`text-sm text-muted ${centered ? "text-center" : ""}`} aria-live="polite">
         {saved.length ? `♥ ${saved.length} ${saved.length === 1 ? "room" : "rooms"} saved for later` : "Tap the heart to save a room for later."}
       </p>
     </div>

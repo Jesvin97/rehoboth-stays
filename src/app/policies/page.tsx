@@ -15,7 +15,7 @@ export default function PoliciesPage() {
         <h1 className="h2">Policies</h1>
 
         <section id="cancellation" className="flex flex-col gap-4">
-          <h2 className="font-display text-[28px] font-bold">Payment &amp; cancellation</h2>
+          <h2 className="font-display text-[28px] font-medium">Payment &amp; cancellation</h2>
           <p className="text-ink-soft">
             The full amount is paid online at the time of booking through Razorpay. Nothing is due at check-in.
           </p>
@@ -38,14 +38,14 @@ export default function PoliciesPage() {
         </section>
 
         <section id="rules" className="flex flex-col gap-4">
-          <h2 className="font-display text-[28px] font-bold">House rules</h2>
+          <h2 className="font-display text-[28px] font-medium">House rules</h2>
           <ul className="flex flex-col gap-2 pl-5 text-ink-soft [&>li]:list-disc">
             {houseRules.map((r) => <li key={r}>{r}</li>)}
           </ul>
         </section>
 
         <section id="privacy" className="flex flex-col gap-4">
-          <h2 className="font-display text-[28px] font-bold">Privacy</h2>
+          <h2 className="font-display text-[28px] font-medium">Privacy</h2>
           <p className="text-ink-soft">
             [Privacy policy to be supplied by the client — what guest data is collected (name, phone, email, ID at check-in), why, how long it is kept, and who it is shared with (Razorpay for payments). Card details are handled by Razorpay and never stored by us.]
           </p>

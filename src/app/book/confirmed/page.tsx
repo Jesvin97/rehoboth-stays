@@ -44,17 +44,17 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
       <CheckoutHeader />
       <main id="main" className="bg-paper">
         <div className="mx-auto flex max-w-[760px] flex-col items-center gap-6 px-4 pb-24 pt-14 text-center sm:px-6">
-          <span className="flex h-[76px] w-[76px] items-center justify-center rounded-full bg-teal text-white">
+          <span className="flex h-[76px] w-[76px] items-center justify-center rounded-full bg-accent text-white">
             <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5" /></svg>
           </span>
-          <h1 className="font-display text-[clamp(34px,5vw,44px)] font-bold leading-[1.05]">See you soon, {firstName}!</h1>
+          <h1 className="font-display text-[clamp(34px,5vw,44px)] font-medium leading-[1.05]">See you soon, {firstName}!</h1>
           <p className="max-w-[520px] text-lg text-ink-soft">
             Your stay is confirmed and paid in full. Details and directions are on their way{phone ? ` to +91 ${phone}` : ""} on WhatsApp.
           </p>
 
           <div className="card w-full gap-3 text-left">
             <div className="flex items-center gap-3.5 border-b border-line-soft pb-3.5">
-              <Photo label={room.photos[0].label} tone={room.photos[0].tone} className="h-[72px] w-24 shrink-0 rounded-[10px] text-[10px] [&>div]:p-2" />
+              <Photo label={room.photos[0].label} tone={room.photos[0].tone} className="h-[72px] w-24 shrink-0 rounded-[3px] text-[10px] [&>div]:p-2" />
               <div>
                 <strong className="text-lg">{room.name}</strong>
                 <div className="text-sm text-muted">{plan.name} · Booking ID {ref}</div>

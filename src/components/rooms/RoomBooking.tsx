@@ -31,7 +31,7 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
         {children}
 
         <section className="flex flex-col gap-4 border-t border-line-soft pt-8" aria-labelledby="plans-h">
-          <h2 id="plans-h" className="font-display text-[26px] font-bold">Choose a rate plan</h2>
+          <h2 id="plans-h" className="font-display text-[26px] font-medium">Choose a rate plan</h2>
           <div role="radiogroup" aria-labelledby="plans-h" className="flex flex-col gap-3">
             {plans.map((p) => {
               const on = sel.plan === p.id;
@@ -42,11 +42,11 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
                   role="radio"
                   aria-checked={on}
                   onClick={() => set({ plan: p.id })}
-                  className={`lift flex flex-wrap items-center justify-between gap-3.5 rounded-[14px] border-2 px-5 py-4 text-left ${on ? "border-teal bg-teal-wash" : "border-line bg-white"}`}
+                  className={`lift flex flex-wrap items-center justify-between gap-3.5 rounded-[3px] border-2 px-5 py-4 text-left ${on ? "border-accent bg-accent-wash" : "border-line bg-white"}`}
                 >
                   <span className="flex items-center gap-3.5">
-                    <span className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-2 ${on ? "border-teal" : "border-[#a9b8ad]"}`}>
-                      <span className={`h-2.5 w-2.5 rounded-full ${on ? "bg-teal" : ""}`} />
+                    <span className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-2 ${on ? "border-accent" : "border-[#a9b8ad]"}`}>
+                      <span className={`h-2.5 w-2.5 rounded-full ${on ? "bg-accent" : ""}`} />
                     </span>
                     <span>
                       <strong>{p.name}</strong>
@@ -68,7 +68,7 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
         </section>
 
         <section className="flex flex-col gap-4 border-t border-line-soft pt-8" aria-labelledby="addons-h">
-          <h2 id="addons-h" className="font-display text-[26px] font-bold">Add to your stay</h2>
+          <h2 id="addons-h" className="font-display text-[26px] font-medium">Add to your stay</h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {addOns.map((a) => {
               const on = sel.addOns.includes(a.id);
@@ -78,11 +78,11 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
                   type="button"
                   aria-pressed={on}
                   onClick={() => set({ addOns: on ? sel.addOns.filter((x) => x !== a.id) : [...sel.addOns, a.id] })}
-                  className={`lift flex flex-col gap-1.5 rounded-[14px] border-2 p-4 text-left ${on ? "border-teal bg-teal-wash" : "border-line bg-white"}`}
+                  className={`lift flex flex-col gap-1.5 rounded-[3px] border-2 p-4 text-left ${on ? "border-accent bg-accent-wash" : "border-line bg-white"}`}
                 >
                   <span className="flex items-center justify-between gap-2">
                     <strong>{a.name}</strong>
-                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 text-sm text-white ${on ? "border-teal bg-teal" : "border-[#a9b8ad] bg-white"}`}>{on ? "✓" : ""}</span>
+                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 text-sm text-white ${on ? "border-accent bg-accent" : "border-[#a9b8ad] bg-white"}`}>{on ? "✓" : ""}</span>
                   </span>
                   <span className="text-sm text-muted">+ {inr(a.price)} · {a.unit}</span>
                 </button>
@@ -92,12 +92,12 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
         </section>
       </div>
 
-      <aside aria-label="Book this room" className="sticky top-24 flex w-full max-w-[420px] flex-[1_1_340px] flex-col gap-4 rounded-[18px] border border-line bg-white p-6 shadow-[0_8px_28px_rgba(28,43,36,0.08)]">
+      <aside aria-label="Book this room" className="sticky top-24 flex w-full max-w-[420px] flex-[1_1_340px] flex-col gap-4 rounded-[3px] border border-line bg-white p-6 shadow-[0_8px_28px_rgba(28,43,36,0.08)]">
         <div>
           <strong className="font-display text-[28px]">{inr(room.rates[sel.plan])}</strong>
           <span className="text-muted"> / night · {plans.find((p) => p.id === sel.plan)?.name}</span>
         </div>
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-1 gap-2.5">
           <label className="field-label">
             Check-in
             <input
@@ -131,15 +131,15 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
             <p className="text-[13px] text-muted">Have a coupon? Apply it at checkout.</p>
           </div>
         ) : (
-          <p role="alert" className="rounded-[10px] bg-error-bg px-3 py-2.5 text-sm text-error-ink">{q.error}</p>
+          <p role="alert" className="rounded-[3px] bg-error-bg px-3 py-2.5 text-sm text-error-ink">{q.error}</p>
         )}
 
         {q.ok ? (
           <Link href={`/book?${selectionQuery(sel)}`} className="btn-primary min-h-[52px] rounded-xl no-underline">
-            Reserve — continue to checkout
+            Reserve now
           </Link>
         ) : (
-          <button type="button" disabled className="btn-primary min-h-[52px] rounded-xl">Reserve — continue to checkout</button>
+          <button type="button" disabled className="btn-primary min-h-[52px] rounded-xl">Reserve now</button>
         )}
         <p className="text-center text-[13px] text-muted">
           Full payment at booking · secured by Razorpay

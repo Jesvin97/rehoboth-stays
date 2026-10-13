@@ -13,8 +13,8 @@ export function WhatsAppChat() {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 max-sm:bottom-24">
       {open ? (
-        <div role="dialog" aria-label="Chat with the host" className="animate-pop w-[320px] max-w-[calc(100vw-48px)] overflow-hidden rounded-[18px] bg-white shadow-[0_18px_44px_rgba(0,0,0,0.25)]">
-          <div className="flex items-center gap-3 bg-teal p-4 text-white">
+        <div role="dialog" aria-label="Chat with the host" className="animate-pop w-[320px] max-w-[calc(100vw-48px)] overflow-hidden rounded-[3px] bg-white shadow-[0_18px_44px_rgba(0,0,0,0.25)]">
+          <div className="flex items-center gap-3 bg-accent p-4 text-white">
             <div className="h-10 w-10 shrink-0 rounded-full bg-[#a9c7c1]" aria-hidden="true" />
             <div className="flex-1">
               <strong>{site.hostFirstName}</strong>
@@ -33,12 +33,12 @@ export function WhatsAppChat() {
             ) : null}
             <div className="flex flex-col gap-1.5 pt-1">
               {quick.map((q) => (
-                <button key={q} type="button" onClick={() => setPicked(q)} className="min-h-[38px] rounded-full border border-teal bg-white px-3.5 text-left text-sm text-teal hover:bg-teal-tint">
+                <button key={q} type="button" onClick={() => setPicked(q)} className="min-h-[38px] rounded-full border border-accent bg-white px-3.5 text-left text-sm text-accent hover:bg-accent-tint">
                   {q}
                 </button>
               ))}
             </div>
-            <a href={whatsappLink(picked || undefined)} target="_blank" rel="noreferrer" className="mt-1 rounded-[10px] bg-teal p-3 text-center font-semibold text-white no-underline hover:bg-teal-dark">
+            <a href={whatsappLink(picked || undefined)} target="_blank" rel="noreferrer" className="mt-1 rounded-[3px] bg-accent p-3 text-center font-semibold text-white no-underline hover:bg-accent-dark">
               Continue in WhatsApp
             </a>
           </div>
@@ -49,7 +49,7 @@ export function WhatsAppChat() {
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Close chat" : "Chat with us on WhatsApp"}
         aria-expanded={open}
-        className="flex h-[58px] w-[58px] items-center justify-center rounded-full bg-teal text-white shadow-[0_6px_18px_rgba(0,0,0,0.25)] transition-colors hover:bg-teal-dark"
+        className="flex h-[58px] w-[58px] items-center justify-center rounded-full bg-accent text-white shadow-[0_6px_18px_rgba(0,0,0,0.25)] transition-colors hover:bg-accent-dark"
       >
         <Chat size={26} />
       </button>

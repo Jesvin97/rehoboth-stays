@@ -14,6 +14,9 @@ export type Room = {
   view: string;
   chips: string[];
   tags: ("couples" | "families" | "workation")[];
+  /** Short amenity badges shown on room cards. */
+  badges: string[];
+  bedrooms: number;
   /** Nightly rate per plan, in rupees. SAMPLE values — replace with the client's rates. */
   rates: Record<PlanId, number>;
   photos: { label: string; tone: string }[];
@@ -30,6 +33,8 @@ export const EXTRA_ADULT_PER_NIGHT = 1200;
 export const rooms: Room[] = [
   {
     slug: "heritage-room",
+    badges: ["Couple friendly", "Garden view", "Work-friendly Wi-Fi"],
+    bedrooms: 1,
     name: "[Heritage Room]",
     tagline: "[Original teak ceilings, opens onto the courtyard.]",
     description:
@@ -53,6 +58,8 @@ export const rooms: Room[] = [
   },
   {
     slug: "plantation-cottage",
+    badges: ["Couple friendly", "Family friendly", "Estate view"],
+    bedrooms: 1,
     name: "[Plantation Cottage]",
     tagline: "[Standalone cottage at the edge of the coffee.]",
     description:
@@ -76,6 +83,8 @@ export const rooms: Room[] = [
   },
   {
     slug: "family-suite",
+    badges: ["Family friendly", "2 bedrooms", "Garden view"],
+    bedrooms: 2,
     name: "[Family Suite]",
     tagline: "[Two bedrooms around a shared lounge.]",
     description:
@@ -99,6 +108,8 @@ export const rooms: Room[] = [
   },
   {
     slug: "whole-home",
+    badges: ["Best for groups", "Private cook", "Secured parking"],
+    bedrooms: 4,
     name: "[Whole Home]",
     tagline: "[Take over the house for a reunion or a team retreat.]",
     description:

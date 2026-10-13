@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/figtree";
-import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/jost";
+import "@fontsource-variable/cormorant-garamond";
 import "./globals.css";
 import { site } from "@/lib/site";
 

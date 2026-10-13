@@ -17,10 +17,10 @@ export function Faq({ items }: { items: { q: string; a: string }[] }) {
                 aria-expanded={isOpen}
                 aria-controls={`faq-a-${i}`}
                 onClick={() => setOpen(isOpen ? -1 : i)}
-                className="flex min-h-14 w-full items-center justify-between gap-4 py-5 text-left text-lg font-semibold text-ink"
+                className="flex min-h-16 w-full items-center justify-between gap-4 py-6 text-left font-display text-[23px] font-medium text-ink hover:text-accent"
               >
                 {f.q}
-                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xl transition-colors ${isOpen ? "bg-teal text-white" : "bg-mist text-ink"}`} aria-hidden="true">
+                <span className={`flex h-9 w-9 shrink-0 items-center justify-center border font-sans text-xl transition-colors ${isOpen ? "border-accent bg-accent text-white" : "border-line text-ink"}`} aria-hidden="true">
                   {isOpen ? "−" : "+"}
                 </span>
               </button>

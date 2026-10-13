@@ -18,7 +18,7 @@ export function Stepper({
   onChange: (v: number) => void;
 }) {
   const btn =
-    "flex h-9 w-9 items-center justify-center rounded-full border border-[#a9b8ad] bg-white text-ink transition-colors hover:border-teal hover:text-teal disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-[#a9b8ad] disabled:hover:text-ink";
+    "flex h-9 w-9 items-center justify-center rounded-full border border-[#a9b8ad] bg-white text-ink transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:border-[#a9b8ad] disabled:hover:text-ink";
   return (
     <div className="flex items-center justify-between gap-4">
       <div>

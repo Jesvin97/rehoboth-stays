@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { heroSlides } from "@/lib/content";
@@ -8,6 +9,7 @@ import { addDays, defaultStay, nightsBetween, todayIST } from "@/lib/dates";
 import { ChevronDown, ChevronLeft, ChevronRight } from "../ui/Icons";
 import { Stepper } from "../ui/Stepper";
 
+/** Full-screen photo hero (Taj) with a refined "Book a stay" bar (Voye fields). */
 export function Hero() {
   const router = useRouter();
   const [slide, setSlide] = useState(0);
@@ -24,7 +26,7 @@ export function Hero() {
 
   useEffect(() => {
     if (paused) return;
-    const t = setInterval(() => setSlide((s) => (s + 1) % heroSlides.length), 6000);
+    const t = setInterval(() => setSlide((s) => (s + 1) % heroSlides.length), 6500);
     return () => clearInterval(t);
   }, [paused]);
 
@@ -47,7 +49,7 @@ export function Hero() {
     setSlide((i + heroSlides.length) % heroSlides.length);
   };
 
-  const guestLabel = `${adults} ${adults === 1 ? "adult" : "adults"}${children ? `, ${children} ${children === 1 ? "child" : "children"}` : ""}`;
+  const guestLabel = `${adults} ${adults === 1 ? "Adult" : "Adults"}${children ? `, ${children} ${children === 1 ? "Child" : "Children"}` : ""}`;
 
   function onSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -61,58 +63,58 @@ export function Hero() {
   }
 
   return (
-    <section className="relative flex min-h-[720px] flex-col justify-end bg-[#2c3f35]" aria-roledescription="carousel" aria-label="Photos of the homestay">
-      {heroSlides.map((s, i) => (
-        <div
-          key={s.label}
-          role="img"
-          aria-label={`Photo: ${s.label}`}
-          aria-hidden={i !== slide}
-          className="absolute inset-0 p-6 text-[13px] font-semibold uppercase tracking-[0.06em] text-[#dce6de] transition-opacity duration-1000"
-          style={{ backgroundColor: s.tone, opacity: i === slide ? 1 : 0 }}
-        >
-          [{s.label}]
-        </div>
-      ))}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent from-35% to-[rgba(20,30,25,0.75)]" aria-hidden="true" />
+    <section className="relative" aria-roledescription="carousel" aria-label="Photos of the homestay">
+      <div className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden bg-forest text-center">
+        {heroSlides.map((s, i) => (
+          <div
+            key={s.label}
+            role="img"
+            aria-label={`Photo: ${s.label}`}
+            aria-hidden={i !== slide}
+            className="absolute inset-0 flex items-start justify-end px-8 pt-36 text-[11px] font-medium uppercase tracking-[0.2em] text-white/55 transition-opacity duration-[1400ms]"
+            style={{ backgroundColor: s.tone, opacity: i === slide ? 1 : 0 }}
+          >
+            [{s.label}]
+          </div>
+        ))}
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,24,20,0.55)_0%,rgba(15,24,20,0.15)_40%,rgba(15,24,20,0.6)_100%)]" aria-hidden="true" />
 
-      <div className="container-x relative flex flex-col gap-6 pb-10 pt-32">
-        <div className="flex max-w-[720px] flex-col gap-3">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gold-light">A family home in {site.region}</p>
-          <h1 className="font-display text-[clamp(40px,6vw,78px)] font-bold leading-none text-white">Live like a local. Wake up somewhere green.</h1>
-          <p className="max-w-[560px] text-lg text-[#e6ece7]">[One line on what makes the home special — e.g. a 90-year-old tharavad on a spice estate, hosted by the [Family] family.]</p>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <span key={slide} className="animate-fade-up font-medium text-white" aria-live="polite">{heroSlides[slide].caption}</span>
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-center gap-1.5">
-              {heroSlides.map((s, i) => (
-                <button
-                  key={s.label}
-                  type="button"
-                  onClick={() => go(i)}
-                  aria-label={`Show photo ${i + 1}`}
-                  aria-current={i === slide}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${i === slide ? "w-7 bg-white" : "w-2.5 bg-white/50 hover:bg-white/80"}`}
-                />
-              ))}
-            </div>
-            <button type="button" onClick={() => go(slide - 1)} aria-label="Previous photo" className="flex h-11 w-11 items-center justify-center rounded-full border-[1.5px] border-white/70 text-white hover:bg-white/15">
-              <ChevronLeft size={18} />
-            </button>
-            <button type="button" onClick={() => go(slide + 1)} aria-label="Next photo" className="flex h-11 w-11 items-center justify-center rounded-full border-[1.5px] border-white/70 text-white hover:bg-white/15">
-              <ChevronRight size={18} />
-            </button>
+        <div className="relative flex max-w-[860px] flex-col items-center gap-6 px-4 pb-40 pt-36">
+          <p className="text-[12px] font-medium uppercase tracking-[0.4em] text-gold-light">A family home in {site.region}</p>
+          <h1 className="font-display text-[clamp(44px,7vw,92px)] font-medium leading-[1.02] text-white">
+            Where the estate wakes up with you
+          </h1>
+          <div className="ornament text-gold-light before:bg-gold-light after:bg-gold-light" aria-hidden="true">✦</div>
+          <p className="max-w-[560px] text-lg font-light text-white/90">[One line on what makes the home special — e.g. a 90-year-old tharavad on a spice estate, hosted by the [Family] family.]</p>
+          <div className="flex flex-wrap justify-center gap-3 pt-2">
+            <Link href="/#story" className="btn-light">Discover the home</Link>
           </div>
         </div>
 
-        <form onSubmit={onSearch} aria-label="Check availability" className="flex flex-col gap-3.5 rounded-[18px] bg-white p-[18px] shadow-[0_12px_34px_rgba(0,0,0,0.22)]">
-          <div className="grid grid-cols-1 items-end gap-3.5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]">
-            <label className="field-label">
+        <div className="absolute bottom-40 right-4 flex items-center gap-2 sm:right-8 max-sm:hidden">
+          <span key={slide} className="animate-fade-up mr-3 text-[13px] font-light tracking-[0.06em] text-white/90" aria-live="polite">{heroSlides[slide].caption}</span>
+          <button type="button" onClick={() => go(slide - 1)} aria-label="Previous photo" className="flex h-11 w-11 items-center justify-center border border-white/50 text-white hover:bg-white/15">
+            <ChevronLeft size={18} />
+          </button>
+          <button type="button" onClick={() => go(slide + 1)} aria-label="Next photo" className="flex h-11 w-11 items-center justify-center border border-white/50 text-white hover:bg-white/15">
+            <ChevronRight size={18} />
+          </button>
+        </div>
+        <div className="absolute bottom-[136px] left-1/2 flex -translate-x-1/2 gap-2 sm:hidden">
+          {heroSlides.map((s, i) => (
+            <button key={s.label} type="button" onClick={() => go(i)} aria-label={`Show photo ${i + 1}`} aria-current={i === slide} className={`h-[3px] transition-all ${i === slide ? "w-8 bg-white" : "w-4 bg-white/45"}`} />
+          ))}
+        </div>
+      </div>
+
+      {/* Booking bar, overlapping the bottom of the hero */}
+      <div className="container-x relative z-10 -mt-[104px]">
+        <form onSubmit={onSearch} aria-label="Book a stay" className="bg-white shadow-[0_24px_60px_rgba(28,43,36,0.16)]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]">
+            <label className="field-label border-b border-line-soft px-6 pb-4 pt-5 sm:border-r lg:border-b-0">
               Check-in
               <input
-                className="field"
+                className="min-h-9 bg-transparent font-display text-[22px] font-medium normal-case tracking-normal text-ink outline-none"
                 type="date"
                 min={today}
                 value={checkIn}
@@ -122,33 +124,41 @@ export function Hero() {
                 }}
               />
             </label>
-            <label className="field-label">
+            <label className="field-label border-b border-line-soft px-6 pb-4 pt-5 lg:border-b-0 lg:border-r">
               Check-out
-              <input className="field" type="date" min={checkIn ? addDays(checkIn, 1) : undefined} value={checkOut} onChange={(e) => setDates((d) => ({ ...d, checkOut: e.target.value }))} />
+              <input
+                className="min-h-9 bg-transparent font-display text-[22px] font-medium normal-case tracking-normal text-ink outline-none"
+                type="date"
+                min={checkIn ? addDays(checkIn, 1) : undefined}
+                value={checkOut}
+                onChange={(e) => setDates((d) => ({ ...d, checkOut: e.target.value }))}
+              />
             </label>
-            <div className="relative flex flex-col gap-1.5" ref={guestsRef}>
-              <span className="text-[13px] font-semibold text-[#4a5c52]" id="guests-label">Guests</span>
+            <div className="relative flex flex-col gap-1.5 border-b border-line-soft px-6 pb-4 pt-5 sm:border-r lg:border-b-0" ref={guestsRef}>
+              <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted" id="guests-label">Guests</span>
               <button
                 type="button"
                 aria-labelledby="guests-label"
                 aria-expanded={guestsOpen}
                 onClick={() => setGuestsOpen((o) => !o)}
-                className="field flex items-center justify-between text-left font-medium"
+                className="flex min-h-9 items-center justify-between gap-3 text-left font-display text-[22px] font-medium text-ink"
               >
                 {guestLabel}
                 <ChevronDown size={16} />
               </button>
               {guestsOpen ? (
-                <div className="animate-pop absolute left-0 top-full z-20 mt-2 flex w-[300px] max-w-[calc(100vw-64px)] flex-col gap-3.5 rounded-[14px] border border-line bg-white p-4 shadow-[0_14px_34px_rgba(28,43,36,0.18)]">
+                <div className="animate-pop absolute left-0 top-full z-20 mt-1 flex w-[320px] max-w-[calc(100vw-48px)] flex-col gap-4 border border-line bg-white p-5 shadow-[0_18px_40px_rgba(28,43,36,0.16)]">
                   <Stepper label="Adults" hint="13 years and above" value={adults} min={1} max={10} onChange={setAdults} />
-                  <Stepper label="Children" hint="Under 12" value={children} min={0} max={6} onChange={setChildren} />
-                  <button type="button" onClick={() => setGuestsOpen(false)} className="btn-primary rounded-[10px]">Done</button>
+                  <Stepper label="Children" hint="3–12 years · under 3 stay free" value={children} min={0} max={6} onChange={setChildren} />
+                  <button type="button" onClick={() => setGuestsOpen(false)} className="btn-primary">Done</button>
                 </div>
               ) : null}
             </div>
-            <button type="submit" className="btn-primary min-h-[46px] rounded-[10px] px-6">Check availability</button>
+            <button type="submit" className="btn-primary min-h-[88px] px-10 text-[13px] max-lg:min-h-14">
+              Check availability
+            </button>
           </div>
-          {error ? <p className="animate-fade-up rounded-xl bg-error-bg px-4 py-3 text-error-ink" role="alert">{error}</p> : null}
+          {error ? <p className="animate-fade-up border-t border-line-soft bg-error-bg px-6 py-3 text-error-ink" role="alert">{error}</p> : null}
         </form>
       </div>
     </section>

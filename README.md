@@ -2,6 +2,8 @@
 
 Next.js 15 (App Router) + TypeScript + Tailwind CSS v4. Booking with full payment through Razorpay.
 
+Design: layout and typography after tajhotels.com (serif headings, tracked uppercase labels, square buttons, gold ornaments), homestay details after voyehomes.com (amenity badges, trust strip, callback request). Fonts: Cormorant Garamond + Jost, self-hosted via @fontsource. Colours: the Rehoboth green palette in `src/app/globals.css`.
+
 ## Run it
 
 ```bash

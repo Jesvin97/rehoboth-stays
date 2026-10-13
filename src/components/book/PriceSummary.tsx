@@ -65,8 +65,8 @@ export function PriceSummary({
             {q.addOnLines.map((a) => (
               <div key={a.id} className="flex justify-between"><span>{a.name}</span><span>{inr(a.price)}</span></div>
             ))}
-            {q.coupon ? <div className="flex justify-between text-teal"><span>Coupon {q.coupon.code}</span><span>− {inr(q.coupon.discount)}</span></div> : null}
-            <div className="flex justify-between"><span>Booking / service fee</span><span className="font-semibold text-teal">₹0</span></div>
+            {q.coupon ? <div className="flex justify-between text-accent"><span>Coupon {q.coupon.code}</span><span>− {inr(q.coupon.discount)}</span></div> : null}
+            <div className="flex justify-between"><span>Booking / service fee</span><span className="font-semibold text-accent">₹0</span></div>
             <div className="flex justify-between"><span>GST</span><span>{inr(q.gst)}</span></div>
             <div className="flex justify-between border-t border-line-soft pt-2.5 text-[19px] font-bold text-ink"><span>Total (INR)</span><span>{inr(q.total)}</span></div>
             <div className="flex justify-between text-sm"><span>Payable now · full amount</span><strong className="text-ink">{inr(q.total)}</strong></div>
@@ -74,7 +74,7 @@ export function PriceSummary({
           </div>
         ) : null}
         {q?.coupon ? (
-          <div className="animate-fade-up rounded-[10px] bg-teal-tint px-3 py-2.5 font-semibold text-teal-dark">You&apos;re saving {inr(q.coupon.discount)} by booking direct</div>
+          <div className="animate-fade-up rounded-[3px] bg-accent-tint px-3 py-2.5 font-semibold text-accent-dark">You&apos;re saving {inr(q.coupon.discount)} by booking direct</div>
         ) : null}
       </div>
 
@@ -88,7 +88,7 @@ export function PriceSummary({
           }}
         >
           <input className="field uppercase" aria-label="Coupon code" placeholder="Enter code" value={typed} onChange={(e) => { setTyped(e.target.value); setErr(""); }} />
-          <button type="submit" className="shrink-0 rounded-[10px] bg-ink px-4 font-semibold text-white hover:bg-black">Apply</button>
+          <button type="submit" className="shrink-0 rounded-[3px] bg-ink px-4 font-semibold text-white hover:bg-black">Apply</button>
         </form>
         {err ? <span role="alert" className="text-sm text-error-ink">{err}</span> : null}
         {coupons.map((c) => {
@@ -96,7 +96,7 @@ export function PriceSummary({
           const eligible = nights >= c.minNights;
           const save = couponDiscount(c.code, roomCost, nights);
           return (
-            <div key={c.code} className={`flex items-center justify-between gap-2.5 rounded-xl border-[1.5px] border-dashed px-3.5 py-3 ${applied ? "border-teal bg-teal-wash" : "border-[#a9b8ad] bg-white"} ${eligible ? "" : "opacity-55"}`}>
+            <div key={c.code} className={`flex items-center justify-between gap-2.5 rounded-xl border-[1.5px] border-dashed px-3.5 py-3 ${applied ? "border-accent bg-accent-wash" : "border-[#a9b8ad] bg-white"} ${eligible ? "" : "opacity-55"}`}>
               <div className="flex min-w-0 flex-col gap-0.5">
                 <code className="text-sm font-bold">{c.code}</code>
                 <span className="text-sm text-ink-soft">{c.title}</span>
@@ -105,7 +105,7 @@ export function PriceSummary({
               <button
                 type="button"
                 onClick={() => (applied ? onCoupon(null) : apply(c.code))}
-                className={`min-h-9 shrink-0 px-1 text-sm font-semibold ${applied ? "text-rust" : "text-teal"}`}
+                className={`min-h-9 shrink-0 px-1 text-sm font-semibold ${applied ? "text-rust" : "text-accent"}`}
               >
                 {applied ? "Remove" : "Apply"}
               </button>
