@@ -24,7 +24,6 @@ export const roomFilters = [
 export const experiences = [
   {
     id: "estate-walk",
-    short: "Walk the estate",
     tab: "Estate walk",
     title: "Plantation walk with your host",
     meta: "90 min · Complimentary · Every morning",
@@ -32,7 +31,6 @@ export const experiences = [
   },
   {
     id: "cooking",
-    short: "Cook with us",
     tab: "Cook with us",
     title: "Cook a Kerala meal with the family",
     meta: "2 hrs · ₹[PRICE] per person",
@@ -40,7 +38,6 @@ export const experiences = [
   },
   {
     id: "boat",
-    short: "A country boat",
     tab: "Country boat",
     title: "Sunrise on a country boat",
     meta: "1 hr · ₹[PRICE] per boat · On request",
@@ -48,7 +45,6 @@ export const experiences = [
   },
   {
     id: "ayurveda",
-    short: "Ayurveda at home",
     tab: "Ayurveda",
     title: "Ayurveda massage at home",
     meta: "60 min · ₹[PRICE] · Visiting therapist",

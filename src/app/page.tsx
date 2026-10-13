@@ -1,180 +1,164 @@
 import Link from "next/link";
-import { StageProvider } from "@/components/stage/StageContext";
-import { Stage } from "@/components/stage/Stage";
-import { Reveal } from "@/components/stage/Reveal";
-import { Picture } from "@/components/stage/Picture";
-import { HeroFinder } from "@/components/home/HeroFinder";
-import { RoomsList } from "@/components/home/RoomsList";
-import { ExperienceShowcase } from "@/components/home/ExperienceShowcase";
-import { GalleryRow } from "@/components/home/GalleryRow";
-import { WhatsAppChat } from "@/components/site/WhatsAppChat";
-import { faqs, houseRules, places, experiences } from "@/lib/content";
-import { rooms } from "@/lib/rooms";
-import { site, whatsappLink } from "@/lib/site";
+import { SiteShell } from "@/components/site/SiteShell";
+import { Hero } from "@/components/home/Hero";
+import { TrustStrip } from "@/components/home/TrustStrip";
+import { RoomsSection } from "@/components/home/RoomsSection";
+import { Experiences } from "@/components/home/Experiences";
+import { AroundUs } from "@/components/home/AroundUs";
+import { Reviews } from "@/components/home/Reviews";
+import { Faq } from "@/components/home/Faq";
+import { Callback } from "@/components/home/Callback";
+import { Photo } from "@/components/ui/Photo";
+import { faqs } from "@/lib/content";
+import { site } from "@/lib/site";
 
-const headClass = "font-display text-[clamp(2rem,1.3rem+2vw,2.75rem)] font-medium leading-[1.05] tracking-[-0.02em]";
-
-// Every photo the fixed stage can show, in reading order.
-const stageKeys = ["house", "verandah", ...rooms.map((r) => `room-${r.slug}`), ...experiences.map((e) => `exp-${e.id}`), "kitchen"];
-
-const faqItems = [
-  ...faqs,
-  { q: "When can we arrive and leave?", a: `Check-in is from ${site.checkInTime} and check-out is by ${site.checkOutTime}. Ask us if you need earlier or later; we can often manage it.` },
-  { q: "What do we need to bring?", a: "Government ID for every guest. [Anything else the hosts recommend: a rain jacket in the monsoon, walking shoes for the estate.]" },
-  { q: "Are there house rules?", a: houseRules.join(". ") + "." },
-];
+function SectionTitle({ eyebrow, title, children }: { eyebrow: string; title: string; children?: React.ReactNode }) {
+  return (
+    <div className="section-title">
+      <p className="eyebrow">{eyebrow}</p>
+      <h2 className="h2">{title}</h2>
+      <div className="ornament" aria-hidden="true">✦</div>
+      {children ? <p className="text-[17px] text-ink-soft">{children}</p> : null}
+    </div>
+  );
+}
 
 export default function HomePage() {
   return (
-    <StageProvider>
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:bg-white focus:p-3">
-        Skip to content
-      </a>
-      <Reveal />
-      <main id="main">
-        {/* The split stage: a fixed photograph on the left, the reading column on the right */}
-        <div className="lg:grid lg:grid-cols-[47fr_53fr]">
-          <div className="hidden bg-night lg:block">
-            <Stage keys={stageKeys} />
-          </div>
+    <SiteShell overlayHeader>
+      <Hero />
 
-          <div className="relative min-w-0">
-            <HeroFinder />
-
-            {/* Intro: what the name means, what the place is */}
-            <section data-stage="verandah" className="bg-paper px-5 pb-40 pt-24 lg:pl-[12%] lg:pr-10">
-              <div className="flex max-w-[44ch] flex-col gap-5 text-[18px] text-ink">
-                <p data-reveal className="font-medium">
-                  Rehoboth means room enough. Ambattu is our family name. Together they are the house: four rooms, a working estate and a kitchen that has fed visitors for [years].
-                </p>
-                <p data-reveal style={{ ["--i" as string]: 1 }}>[When the house was built, by whom, and what it was before it took in guests.]</p>
-                <p data-reveal style={{ ["--i" as string]: 2 }}>
-                  You stay as guests of the family, not of a hotel. Breakfast is on the verandah. Dinner, if you want it, is whatever we are eating.
-                </p>
-                <p data-reveal style={{ ["--i" as string]: 3 }}>
-                  [What the estate grows, what you can walk to, and what the mornings sound like.]{" "}
-                  <a href="#letter" className="link-quiet text-accent">Read the hosts&apos; letter</a>
-                </p>
-              </div>
-            </section>
-
-            <RoomsList />
-            <ExperienceShowcase />
-
-            {/* The hosts' letter, with the kitchen */}
-            <section id="letter" data-stage="kitchen" className="bg-paper px-5 py-40 lg:pl-[12%] lg:pr-10">
-              <div className="max-w-[520px]">
-                <div data-reveal className="h-11 w-11 rounded-full" style={{ backgroundColor: "#6f7a68" }} role="img" aria-label="Photograph to come: your hosts" />
-                <h2 className="sr-only">A letter from your hosts</h2>
-                <div className="mt-7 flex flex-col gap-5 text-[18px] leading-[1.55] text-ink">
-                  <p data-reveal style={{ ["--i" as string]: 1 }}>Dear guest,</p>
-                  <p data-reveal style={{ ["--i" as string]: 2 }}>[Two or three lines in the hosts&apos; own words: how the family came to the house, and why they open it to visitors.]</p>
-                  <p data-reveal style={{ ["--i" as string]: 3 }}>
-                    We cook what the estate and the market give us. Breakfast comes with every room: puttu or appam, fruit from the garden, coffee we grew. If you choose the all-meals plan, lunch and dinner are served at our table. [Vegetarian, Syrian Christian or Malabar dishes; tell us what you can&apos;t eat.]
-                  </p>
-                  <p data-reveal style={{ ["--i" as string]: 4 }}>[A line on what guests usually do on their first evening.]</p>
-                  <p data-reveal style={{ ["--i" as string]: 5 }}>We look forward to having you.</p>
-                </div>
-                <p data-reveal className="mt-8 font-display text-[24px] italic text-ink">{site.hosts}</p>
-                <p className="text-[14px] text-muted">Your hosts at {site.name}</p>
-              </div>
-            </section>
-          </div>
-        </div>
-
-        <GalleryRow />
-
-        {/* Getting here: places and drive times as a two-ended list */}
-        <section id="getting-here" className="bg-mist px-5 py-36 lg:px-[6vw]">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-            <div className="lg:col-span-4">
-              <h2 data-reveal className={headClass}>Getting here</h2>
-              <p data-reveal style={{ ["--i" as string]: 1 }} className="mt-5 max-w-[34ch] text-[18px] text-ink">
-                {site.locationLine}. We can arrange a car from the airport or the station.
+      {/* Welcome */}
+      <section id="story" className="pt-28">
+        <div className="container-x flex flex-col gap-16 pb-24">
+          <SectionTitle eyebrow="Welcome to Ambattu Rehoboth" title="Not a hotel. Our home, opened to a few guests at a time.">
+            [2–3 sentences on the house, the family and the land — when it was built, who lives here, and why you began hosting.]
+          </SectionTitle>
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="group row-span-2 overflow-hidden"><Photo label="Hosts on the verandah" className="h-full min-h-[420px]" zoom /></div>
+              <div className="group overflow-hidden"><Photo label="Kitchen" className="h-[202px]" zoom /></div>
+              <div className="group overflow-hidden"><Photo label="House exterior" className="h-[202px]" zoom /></div>
+            </div>
+            <div className="flex flex-col gap-5">
+              <p className="font-display text-[clamp(26px,2.6vw,34px)] font-medium italic leading-snug text-ink">
+                &ldquo;[A line from the hosts — what they hope every guest feels when they leave.]&rdquo;
               </p>
-              <a href={site.social.maps} className="link-quiet mt-4 inline-block text-[18px] text-accent">Open in Google Maps</a>
+              <p className="text-ink-soft">[What a day here feels like — breakfast on the verandah, an estate walk, dinner cooked in the family kitchen.]</p>
+              <div className="flex items-center gap-4 border-t border-line pt-5">
+                <div className="h-14 w-14 rounded-full bg-sage" aria-hidden="true" />
+                <div>
+                  <div className="font-display text-xl font-medium">{site.hosts}</div>
+                  <div className="text-[12px] uppercase tracking-[0.2em] text-muted">Your hosts</div>
+                </div>
+              </div>
+              <Link href="/rooms" className="more-link mt-2">Explore the rooms ›</Link>
             </div>
-            <div className="lg:col-span-6 lg:col-start-6">
-              <p className="mb-3 text-[14px] text-muted">By car from the house</p>
-              <ul className="flex flex-col">
-                {places.map((p, i) => (
-                  <li key={p.name} data-reveal style={{ ["--i" as string]: i }} className="flex items-start justify-between gap-6 py-3">
-                    <div>
-                      <p className="text-[18px] text-ink">{p.name}</p>
-                      <p className="text-[14px] text-muted">{p.note}</p>
-                    </div>
-                    <p className="shrink-0 text-[18px] tabular-nums text-ink">{p.time}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Questions, answered as reading text */}
-        <section id="faq" className="bg-paper px-5 py-36 lg:px-[6vw]">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
-            <h2 data-reveal className={`${headClass} lg:col-span-3`}>Before you come</h2>
-            <div className="text-[18px] leading-[1.55] text-ink lg:col-span-8 lg:col-start-5 lg:columns-2 lg:gap-14">
-              {faqItems.map((f, i) => (
-                <p key={f.q} data-reveal style={{ ["--i" as string]: i % 4 }} className="mb-5 break-inside-avoid">
-                  <span className="font-medium">{f.q}</span> {f.a}
-                </p>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Contact */}
-        <section aria-labelledby="contact-h" className="bg-night px-5 pb-28 pt-36 text-paper lg:px-[6vw]">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-start">
-            <p id="contact-h" data-reveal className="max-w-[26ch] text-[clamp(1.5rem,1.1rem+1.2vw,2.25rem)] leading-[1.2] lg:col-span-5">
-              Write or ring for anything the booking can&apos;t answer. We usually reply within the hour.
-            </p>
-            <Picture k="contact" className="aspect-square w-24 lg:col-span-2 lg:col-start-8 lg:w-[160px]" caption={false} />
-            <div className="flex flex-col gap-3 lg:col-span-3 lg:col-start-10">
-              <p className="text-[18px] font-medium">Rather talk first?</p>
-              <a href={whatsappLink()} target="_blank" rel="noreferrer" className="text-[18px] text-paper underline decoration-paper/40 underline-offset-4 hover:text-white hover:decoration-white">
-                Message us on WhatsApp
-              </a>
-              <a href={site.phoneHref} className="text-[18px] text-paper underline decoration-paper/40 underline-offset-4 hover:text-white hover:decoration-white">
-                Call {site.phone}
-              </a>
-              <p className="mt-2 text-[14px] text-sage">{site.region} · replies within the hour, 8 am to 9 pm</p>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      {/* Footer: the name across the last photograph */}
-      <footer className="relative h-[88svh] min-h-[560px] overflow-hidden text-paper lg:h-svh">
-        <Picture k="footer" fill caption={false} className="brightness-[0.62]" />
-        <div className="relative flex h-full flex-col justify-between px-5 pt-8 lg:px-8">
-          <div className="flex flex-col justify-between gap-8 sm:flex-row">
-            <ul className="flex flex-col gap-1 text-[18px]">
-              <li><Link href="/rooms" className="link-quiet text-paper hover:text-white">Rooms and prices</Link></li>
-              <li><Link href="/policies#cancellation" className="link-quiet text-paper hover:text-white">Cancellation and refunds</Link></li>
-              <li><Link href="/policies#rules" className="link-quiet text-paper hover:text-white">House rules</Link></li>
-              <li><Link href="/policies#privacy" className="link-quiet text-paper hover:text-white">Privacy</Link></li>
-            </ul>
-            <address className="flex flex-col gap-1 text-[18px] not-italic sm:text-right">
-              <span>{site.address}</span>
-              <a href={site.phoneHref} className="link-quiet text-paper hover:text-white">{site.phone}</a>
-              <a href={`mailto:${site.email}`} className="link-quiet text-paper hover:text-white">{site.email}</a>
-            </address>
-          </div>
-          <div>
-            <p aria-hidden="true" className="footer-mark select-none whitespace-nowrap font-display text-[11.6vw] font-medium lowercase leading-[0.8] tracking-[-0.035em] lg:text-[12.4vw]">
-              ambattu rehoboth
-            </p>
-            <p className="pb-6 pt-4 text-[14px] text-sage">
-              © {new Date().getFullYear()} {site.name} · {site.registration} · Payments by Razorpay
-            </p>
           </div>
         </div>
-      </footer>
+      </section>
 
-      <WhatsAppChat />
-    </StageProvider>
+      {/* Trust strip */}
+      <section aria-label="At a glance" className="border-y border-line bg-paper">
+        <div className="container-x py-14">
+          <TrustStrip />
+        </div>
+      </section>
+
+      {/* Rooms */}
+      <section id="rooms">
+        <div className="container-x flex flex-col gap-14 py-28">
+          <SectionTitle eyebrow="Stay" title="Rooms & cottages">
+            Each room is different — pick the one that suits how you travel.
+          </SectionTitle>
+          <RoomsSection centered />
+          <div className="flex justify-center">
+            <Link href="/rooms" className="btn-outline">Check dates &amp; compare</Link>
+          </div>
+        </div>
+      </section>
+
+
+      {/* Experiences */}
+      <section id="experiences">
+        <div className="container-x flex flex-col gap-14 py-28">
+          <SectionTitle eyebrow="Experiences" title="Explore more of the estate">
+            Unhurried things to do, most of them without leaving the home.
+          </SectionTitle>
+          <Experiences />
+        </div>
+      </section>
+
+      {/* Dining */}
+      <section id="dining" className="bg-forest text-white">
+        <div className="grid grid-cols-1 lg:grid-cols-2">
+          <div className="group overflow-hidden">
+            <Photo label="Banana-leaf meal on the dining table" tone="#56705f" dark className="h-full min-h-[460px]" zoom />
+          </div>
+          <div className="flex flex-col justify-center gap-6 px-6 py-20 sm:px-14 lg:px-20">
+            <p className="eyebrow text-gold-light">Dining</p>
+            <h2 className="h2 text-white">From our kitchen to your banana leaf</h2>
+            <div className="ornament justify-start text-gold-light before:hidden after:bg-gold-light" aria-hidden="true">✦</div>
+            <p className="text-[17px] text-white/85">[Breakfast is included with every stay. Lunch and dinner are cooked to order — vegetarian, Syrian Christian, Malabar or seafood menus, served family-style.]</p>
+            <ul className="grid grid-cols-1 gap-4 border-t border-white/15 pt-6 sm:grid-cols-3">
+              {[
+                ["Breakfast", "[Puttu, appam, fruit from the garden]"],
+                ["Kerala sadya", "[On request · ₹[PRICE] pp]"],
+                ["Dinner", "[Family-style · ₹[PRICE] pp]"],
+              ].map(([t, d]) => (
+                <li key={t} className="flex flex-col gap-1">
+                  <span className="font-display text-[22px]">{t}</span>
+                  <span className="text-sm text-white/75">{d}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+
+      {/* Around us */}
+      <section id="around" className="bg-paper">
+        <div className="container-x py-28">
+          <AroundUs />
+        </div>
+      </section>
+
+      {/* Reviews */}
+      <section aria-label="Guest reviews">
+        <div className="container-x py-28">
+          <Reviews />
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section aria-label="Gallery" className="grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-5">
+        {["Instagram 1", "Instagram 2", "Instagram 3", "Instagram 4", "Instagram 5"].map((l, i) => (
+          <div key={l} className={`group overflow-hidden ${i === 4 ? "max-lg:hidden" : ""}`}>
+            <Photo label={l} className="aspect-square" zoom />
+          </div>
+        ))}
+      </section>
+
+      {/* FAQ */}
+      <section id="faq">
+        <div className="mx-auto flex max-w-[880px] flex-col gap-12 px-4 py-28 sm:px-8">
+          <SectionTitle eyebrow="Before you come" title="Questions guests ask" />
+          <Faq items={faqs} />
+        </div>
+      </section>
+
+      {/* Callback */}
+      <section id="callback" className="bg-accent text-white">
+        <div className="container-x flex flex-col items-center gap-8 py-20 text-center">
+          <div className="flex max-w-[640px] flex-col items-center gap-3">
+            <p className="text-[12px] font-medium uppercase tracking-[0.28em] text-gold-light">Plan your stay</p>
+            <h2 className="h2 text-white">Only a few rooms. Talk to your host.</h2>
+            <p className="text-white/85">Leave your number and we&apos;ll call you back — or <Link href="/rooms" className="text-white underline hover:text-gold-light">book online</Link> now.</p>
+          </div>
+          <Callback />
+        </div>
+      </section>
+    </SiteShell>
   );
 }

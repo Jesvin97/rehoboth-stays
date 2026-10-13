@@ -2,7 +2,7 @@
 
 Next.js 15 (App Router) + TypeScript + Tailwind CSS v4. Booking with full payment through Razorpay.
 
-Homepage design: the "split stage" direction from the Taste skill (`design-taste-frontend`): a fixed photograph on one side, a reading column on the other, the room finder in the first screen. Other pages: layout and typography after tajhotels.com (serif headings, tracked uppercase labels, square buttons, gold ornaments), homestay details after voyehomes.com (amenity badges, trust strip, callback request). Fonts: Cormorant Garamond + Jost, self-hosted via @fontsource. Colours: the Rehoboth green palette in `src/app/globals.css`.
+Design: layout and typography after tajhotels.com (serif headings, tracked uppercase labels, square buttons, gold ornaments), homestay details after voyehomes.com (amenity badges, trust strip, callback request). Fonts: Cormorant Garamond + Jost, self-hosted via @fontsource. Colours: the Rehoboth green palette in `src/app/globals.css`.
 
 ## Run it
 
@@ -34,7 +34,7 @@ Everything in `[brackets]` is placeholder copy.
 - `src/lib/pricing.ts` — add-ons, coupon codes, GST rate
 - `src/lib/content.ts` — hero captions, experiences, nearby places, reviews, FAQs, house rules
 - `src/lib/cancellation.ts` — refund rules (counted from booking date: 50% within 2 days, 25% until day 4, none from day 5)
-- `src/lib/photos.ts` — every homepage photograph by name. **To add a real photo:** put the file in `public/photos/` and set its `src` (e.g. `src: "/photos/house-from-gate.jpg"`). Until then each slot shows a flat tone with a caption saying what belongs there.
+- Photos: replace the `<Photo>` placeholders with `next/image` once photos are in `public/photos/`
 
 ## Payments (Razorpay)
 
