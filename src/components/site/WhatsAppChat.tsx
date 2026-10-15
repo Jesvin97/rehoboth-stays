@@ -11,7 +11,7 @@ export function WhatsAppChat() {
   const [picked, setPicked] = useState("");
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 max-sm:bottom-24">
+    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
       {open ? (
         <div role="dialog" aria-label="Chat with the host" className="animate-pop w-[320px] max-w-[calc(100vw-48px)] overflow-hidden rounded-[3px] bg-white shadow-[0_18px_44px_rgba(0,0,0,0.25)]">
           <div className="flex items-center gap-3 bg-accent p-4 text-white">
