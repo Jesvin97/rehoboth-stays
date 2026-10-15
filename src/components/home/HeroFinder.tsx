@@ -54,7 +54,7 @@ export function HeroFinder() {
             </li>
           ))}
         </ul>
-        <span className="text-[18px] text-paper lg:hidden">{site.name}</span>
+        <span className="bg-ink/60 px-2 py-1 text-[18px] text-paper lg:hidden">{site.name}</span>
         <Link href="/rooms" className="press inline-flex min-h-11 items-center bg-accent px-5 text-[18px] text-white no-underline hover:bg-accent-dark hover:text-white">
           Book a stay
         </Link>
