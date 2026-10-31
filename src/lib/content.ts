@@ -2,10 +2,10 @@
 
 /** `src` is a file in /public/photos; without it the slide shows a labelled placeholder. */
 export const heroSlides: { label: string; caption: string; tone: string; src?: string }[] = [
-  { label: "The house at dawn", caption: "[Morning mist over the estate]", tone: "#3e5a4c", src: "/photos/house-at-dawn.jpg" },
-  { label: "Breakfast on the verandah", caption: "[Breakfast on the verandah, from our kitchen]", tone: "#4b5e3f", src: "/photos/breakfast-verandah.jpg" },
+  { label: "The homestay from the gate", caption: "Our family home, set into the hillside", tone: "#3e5a4c", src: "/photos/house-front.jpg" },
   { label: "Flower beds by the entrance", caption: "Red salvia along the driveway", tone: "#2f5257", src: "/photos/garden-red-salvia.jpg" },
   { label: "The garden", caption: "Marigolds and impatiens in full bloom", tone: "#56503a", src: "/photos/garden-flower-bed.jpg" },
+  { label: "The verandah", caption: "Lantern-lit verandah outside the rooms", tone: "#4b5e3f", src: "/photos/verandah-lanterns.jpg" },
 ];
 
 export const stats = [
