@@ -54,7 +54,7 @@ export const rooms: Room[] = [
       { label: "Bed", tone: "#c9d3ca" },
       { label: "Bathroom", tone: "#bfcbc9" },
       { label: "View from window", tone: "#c3cdb7" },
-      { label: "Courtyard", tone: "#cdc8b8" },
+      { label: "Courtyard", tone: "#cdc8b8", src: "/photos/courtyard-path.jpg" },
     ],
   },
   {
@@ -77,7 +77,7 @@ export const rooms: Room[] = [
     photos: [
       { label: "Plantation Cottage", tone: "#b5c4b1", src: "/photos/plantation-cottage.jpg" },
       { label: "Bedroom", tone: "#c9d3ca" },
-      { label: "Sit-out", tone: "#c6cbb6" },
+      { label: "Sit-out", tone: "#c6cbb6", src: "/photos/verandah-seating.jpg" },
       { label: "Bathroom", tone: "#bfcbc9" },
       { label: "Estate view", tone: "#b9c7b4" },
     ],
@@ -104,7 +104,7 @@ export const rooms: Room[] = [
       { label: "Bedroom 1", tone: "#c9d3ca" },
       { label: "Bedroom 2", tone: "#bfcbc9" },
       { label: "Bathroom", tone: "#c3cdb7" },
-      { label: "Garden", tone: "#b8c6bc" },
+      { label: "Garden", tone: "#b8c6bc", src: "/photos/garden-flower-bed.jpg" },
     ],
   },
   {
@@ -127,9 +127,9 @@ export const rooms: Room[] = [
     photos: [
       { label: "The house", tone: "#b5c4b1", src: "/photos/house-at-dawn.jpg" },
       { label: "Dining hall", tone: "#c9d3ca" },
-      { label: "Verandah", tone: "#c6cbb6" },
+      { label: "Verandah", tone: "#c6cbb6", src: "/photos/verandah-lanterns.jpg" },
       { label: "Rooms", tone: "#bfcbc9" },
-      { label: "Grounds", tone: "#b9c7b4" },
+      { label: "Grounds", tone: "#b9c7b4", src: "/photos/garden-fountain.jpg" },
     ],
   },
 ];

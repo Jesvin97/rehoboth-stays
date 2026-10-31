@@ -4,8 +4,8 @@
 export const heroSlides: { label: string; caption: string; tone: string; src?: string }[] = [
   { label: "The house at dawn", caption: "[Morning mist over the estate]", tone: "#3e5a4c", src: "/photos/house-at-dawn.jpg" },
   { label: "Breakfast on the verandah", caption: "[Breakfast on the verandah, from our kitchen]", tone: "#4b5e3f", src: "/photos/breakfast-verandah.jpg" },
-  { label: "The river nearby", caption: "[Five minutes' walk to the river]", tone: "#2f5257" },
-  { label: "Plantation walk", caption: "[Walk the coffee rows with your host]", tone: "#56503a" },
+  { label: "Flower beds by the entrance", caption: "Red salvia along the driveway", tone: "#2f5257", src: "/photos/garden-red-salvia.jpg" },
+  { label: "The garden", caption: "Marigolds and impatiens in full bloom", tone: "#56503a", src: "/photos/garden-flower-bed.jpg" },
 ];
 
 export const stats = [
