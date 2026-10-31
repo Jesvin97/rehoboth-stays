@@ -46,7 +46,7 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
     >
       <div className={`border-b text-[12px] tracking-[0.08em] transition-colors ${clear ? "border-white/15" : "border-line-soft bg-paper"}`}>
         <div className="container-x flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-2">
-          <span className={clear ? "text-white/85" : "text-muted"}>{site.locationLine}</span>
+          <span className={`max-sm:hidden ${clear ? "text-white/85" : "text-muted"}`}>{site.locationLine}</span>
           <div className="flex flex-wrap gap-5">
             <a href={site.phoneHref} className={`no-underline ${clear ? "text-white/85 hover:text-white" : "text-muted hover:text-accent"}`}>{site.phone}</a>
             <a href={whatsappLink()} target="_blank" rel="noreferrer" className={`no-underline ${clear ? "text-white/85 hover:text-white" : "text-muted hover:text-accent"}`}>WhatsApp</a>

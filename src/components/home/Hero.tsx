@@ -82,7 +82,7 @@ export function Hero() {
               role="img"
               aria-label={`Photo: ${s.label}`}
               aria-hidden={i !== slide}
-              className="absolute inset-0 flex items-start justify-end px-8 pt-36 text-[11px] font-medium uppercase tracking-[0.2em] text-white/55 transition-opacity duration-[1400ms]"
+              className="absolute inset-0 flex items-start justify-end px-8 pt-36 max-sm:hidden text-[11px] font-medium uppercase tracking-[0.2em] text-white/55 transition-opacity duration-[1400ms]"
               style={{ backgroundColor: s.tone, opacity: i === slide ? 1 : 0 }}
             >
               [{s.label}]
