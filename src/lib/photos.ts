@@ -19,27 +19,36 @@ export type PhotoSlot = {
 };
 
 const base: Record<string, PhotoSlot> = {
-  house: { alt: "The house from the gate, early morning", tone: "#4f6656", src: "/photos/house-at-dawn.jpg" },
-  verandah: { alt: "Breakfast on the front verandah", tone: "#5c6b52", src: "/photos/breakfast-verandah.jpg" },
+  house: { alt: "The homestay from the gate", tone: "#4f6656", src: "/photos/house-front.jpg" },
+  verandah: { alt: "The lantern-lit verandah outside the rooms", tone: "#5c6b52", src: "/photos/verandah-lanterns.jpg" },
   estate: { alt: "Rows of coffee under shade trees on the estate", tone: "#55684f" },
-  kitchen: { alt: "Appam, stew and filter coffee from our kitchen", tone: "#65644b", src: "/photos/breakfast-verandah.jpg" },
+  kitchen: { alt: "Appam, stew and filter coffee from our kitchen", tone: "#65644b" },
   hosts: { alt: "Your hosts on the verandah", tone: "#6f7a68" },
-  contact: { alt: "The plantation cottage", tone: "#7d8a78", src: "/photos/plantation-cottage.jpg" },
-  footer: { alt: "The house among the palms", tone: "#2f3d34", src: "/photos/house-at-dawn.jpg" },
+  contact: { alt: "The garden room entrance", tone: "#7d8a78", src: "/photos/garden-room-entrance.jpg" },
+  footer: { alt: "The homestay from the gate", tone: "#2f3d34", src: "/photos/house-front.jpg" },
 };
 
-const gallerySrc: Record<number, string> = { 0: "/photos/house-at-dawn.jpg", 1: "/photos/heritage-room.jpg", 2: "/photos/plantation-cottage.jpg", 3: "/photos/breakfast-verandah.jpg", 6: "/photos/family-suite.jpg" };
+const gallerySrc: Record<number, string> = {
+  0: "/photos/house-front.jpg",
+  1: "/photos/room-teak-bed.jpg",
+  2: "/photos/garden-flower-bed.jpg",
+  3: "/photos/verandah-lanterns.jpg",
+  4: "/photos/courtyard-path.jpg",
+  6: "/photos/family-suite.jpg",
+  7: "/photos/garden-red-salvia.jpg",
+  8: "/photos/courtyard-plant-wall.jpg",
+};
 const gallery: Record<string, PhotoSlot> = Object.fromEntries(
   [
-    ["The house in the morning mist", "#7f8f7c"],
+    ["The homestay from the gate", "#7f8f7c"],
     ["Teak ceiling of the heritage room", "#8a7f66"],
-    ["Pepper vines around the cottage", "#5f7258"],
-    ["Breakfast of appam and stew", "#8b7a5a"],
-    ["The path down to the river", "#667a6c"],
+    ["Marigolds and impatiens in the garden", "#5f7258"],
+    ["The lantern-lit verandah", "#8b7a5a"],
+    ["The courtyard path", "#667a6c"],
     ["A wet afternoon in the monsoon", "#56675d"],
     ["The family suite lounge", "#7a846c"],
-    ["Coffee drying in the yard", "#8e8064"],
-    ["The lane at dusk", "#46564c"],
+    ["Red salvia along the driveway", "#8e8064"],
+    ["The plant wall in the courtyard", "#46564c"],
    ].map(([alt, tone], i) => [`gallery-${i + 1}`, { alt, tone, src: gallerySrc[i] }]),
 );
 
