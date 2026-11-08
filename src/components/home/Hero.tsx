@@ -82,29 +82,29 @@ export function Hero() {
               role="img"
               aria-label={`Photo: ${s.label}`}
               aria-hidden={i !== slide}
-              className="absolute inset-0 flex items-start justify-end px-8 pt-36 max-sm:hidden text-[11px] font-medium uppercase tracking-[0.2em] text-white/55 transition-opacity duration-[1400ms]"
+              className="absolute inset-0 flex items-start justify-end px-8 pt-36 max-sm:hidden text-[13px] font-medium text-white/55 transition-opacity duration-[1400ms]"
               style={{ backgroundColor: s.tone, opacity: i === slide ? 1 : 0 }}
             >
               [{s.label}]
             </div>
           ),
         )}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,24,20,0.55)_0%,rgba(15,24,20,0.15)_40%,rgba(15,24,20,0.6)_100%)]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-linear-to-b from-night/55 via-night/15 via-40% to-night/60" aria-hidden="true" />
 
         <div className="relative flex max-w-[860px] flex-col items-center gap-6 px-4 pb-40 pt-36">
-          <p className="text-[12px] font-medium uppercase tracking-[0.4em] text-gold-light">A family home in {site.region}</p>
+          <p className="text-[13px] font-medium text-gold-light">A family home in {site.region}</p>
           <h1 className="font-display text-[clamp(44px,7vw,92px)] font-medium leading-[1.02] text-white">
             Where the estate wakes up with you
           </h1>
           <div className="ornament text-gold-light before:bg-gold-light after:bg-gold-light" aria-hidden="true">✦</div>
-          <p className="max-w-[560px] text-lg font-light text-white/90">[One line on what makes the home special — e.g. a 90-year-old tharavad on a spice estate, hosted by the [Family] family.]</p>
+          <p className="max-w-[560px] text-lg font-light text-white/90">[One line on what makes this home special.]</p>
           <div className="flex flex-wrap justify-center gap-3 pt-2">
             <Link href="/#story" className="btn-light">Discover the home</Link>
           </div>
         </div>
 
         <div className="absolute bottom-40 right-4 flex items-center gap-2 sm:right-8 max-sm:hidden">
-          <span key={slide} className="animate-fade-up mr-3 text-[13px] font-light tracking-[0.06em] text-white/90" aria-live="polite">{heroSlides[slide].caption}</span>
+          <span key={slide} className="animate-fade-up mr-3 text-[13px] font-light text-white/90" aria-live="polite">{heroSlides[slide].caption}</span>
           <button type="button" onClick={() => go(slide - 1)} aria-label="Previous photo" className="flex h-11 w-11 items-center justify-center border border-white/50 text-white hover:bg-white/15">
             <ChevronLeft size={18} />
           </button>
@@ -114,14 +114,14 @@ export function Hero() {
         </div>
         <div className="absolute bottom-[136px] left-1/2 flex -translate-x-1/2 gap-2 sm:hidden">
           {heroSlides.map((s, i) => (
-            <button key={s.label} type="button" onClick={() => go(i)} aria-label={`Show photo ${i + 1}`} aria-current={i === slide} className={`h-[3px] transition-all ${i === slide ? "w-8 bg-white" : "w-4 bg-white/45"}`} />
+            <button key={s.label} type="button" onClick={() => go(i)} aria-label={`Show photo ${i + 1}`} aria-current={i === slide} className={`h-[3px] w-8 transition-colors ${i === slide ? "bg-white" : "bg-white/45"}`} />
           ))}
         </div>
       </div>
 
       {/* Booking bar, overlapping the bottom of the hero */}
-      <div className="container-x relative z-10 -mt-[104px]">
-        <form onSubmit={onSearch} aria-label="Book a stay" className="bg-white shadow-[0_24px_60px_rgba(28,43,36,0.16)]">
+      <div className="container-x relative z-10 -mt-[104px] lg:max-[1500px]:pr-24">
+        <form onSubmit={onSearch} aria-label="Book a stay" className="bg-white shadow-float">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]">
             <label className="field-label border-b border-line-soft px-6 pb-4 pt-5 sm:border-r lg:border-b-0">
               Check-in
@@ -147,7 +147,7 @@ export function Hero() {
               />
             </label>
             <div className="relative flex flex-col gap-1.5 border-b border-line-soft px-6 pb-4 pt-5 sm:border-r lg:border-b-0" ref={guestsRef}>
-              <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted" id="guests-label">Guests</span>
+              <span className="text-[13px] font-medium text-muted" id="guests-label">Guests</span>
               <button
                 type="button"
                 aria-labelledby="guests-label"
@@ -159,9 +159,9 @@ export function Hero() {
                 <ChevronDown size={16} />
               </button>
               {guestsOpen ? (
-                <div className="animate-pop absolute left-0 top-full z-20 mt-1 flex w-[320px] max-w-[calc(100vw-48px)] flex-col gap-4 border border-line bg-white p-5 shadow-[0_18px_40px_rgba(28,43,36,0.16)]">
+                <div className="animate-pop absolute left-0 top-full z-20 mt-1 flex w-[320px] max-w-[calc(100vw-48px)] flex-col gap-4 border border-line bg-white p-5 shadow-float">
                   <Stepper label="Adults" hint="13 years and above" value={adults} min={1} max={10} onChange={setAdults} />
-                  <Stepper label="Children" hint="3–12 years · under 3 stay free" value={children} min={0} max={6} onChange={setChildren} />
+                  <Stepper label="Children" hint="3 to 12 years, under 3 stay free" value={children} min={0} max={6} onChange={setChildren} />
                   <button type="button" onClick={() => setGuestsOpen(false)} className="btn-primary">Done</button>
                 </div>
               ) : null}

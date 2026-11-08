@@ -26,14 +26,14 @@ export default function PoliciesPage() {
                 <tr><th className="p-3">If you cancel…</th><th className="p-3">Refund</th><th className="p-3">Example (booked on the 6th)</th></tr>
               </thead>
               <tbody className="text-ink-soft">
-                <tr className="border-t border-line"><td className="p-3">On the booking day or within the next 2 days</td><td className="p-3 font-semibold text-ink">50%</td><td className="p-3">6th – 8th</td></tr>
-                <tr className="border-t border-line"><td className="p-3">On the 3rd or 4th day after booking</td><td className="p-3 font-semibold text-ink">25%</td><td className="p-3">9th – 10th</td></tr>
+                <tr className="border-t border-line"><td className="p-3">On the booking day or within the next 2 days</td><td className="p-3 font-semibold text-ink">50%</td><td className="p-3">6th to 8th</td></tr>
+                <tr className="border-t border-line"><td className="p-3">On the 3rd or 4th day after booking</td><td className="p-3 font-semibold text-ink">25%</td><td className="p-3">9th to 10th</td></tr>
                 <tr className="border-t border-line"><td className="p-3">From the 5th day after booking</td><td className="p-3 font-semibold text-ink">No refund</td><td className="p-3">11th onwards</td></tr>
               </tbody>
             </table>
           </div>
           <p className="text-sm text-muted">
-            Refunds go back to the original payment method through Razorpay within 5–7 working days. To cancel, message us on WhatsApp or call {site.phone} with your booking ID. Times are in IST.
+            Refunds go back to the original payment method through Razorpay within 5 to 7 working days. To cancel, message us on WhatsApp or call {site.phone} with your booking ID. Times are in IST.
           </p>
         </section>
 
@@ -47,7 +47,7 @@ export default function PoliciesPage() {
         <section id="privacy" className="flex flex-col gap-4">
           <h2 className="font-display text-[28px] font-medium">Privacy</h2>
           <p className="text-ink-soft">
-            [Privacy policy to be supplied by the client — what guest data is collected (name, phone, email, ID at check-in), why, how long it is kept, and who it is shared with (Razorpay for payments). Card details are handled by Razorpay and never stored by us.]
+            [Privacy policy to be supplied by the client, what guest data is collected (name, phone, email, ID at check-in), why, how long it is kept, and who it is shared with (Razorpay for payments). Card details are handled by Razorpay and never stored by us.]
           </p>
         </section>
       </div>

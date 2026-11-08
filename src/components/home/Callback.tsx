@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { whatsappLink } from "@/lib/site";
 
-const times = ["Morning (9–12)", "Afternoon (12–4)", "Evening (4–8)"];
+const times = ["Morning (9 to 12)", "Afternoon (12 to 4)", "Evening (4 to 8)"];
 
 /**
  * "Request a callback" (from Voye). For now it opens WhatsApp with the request
@@ -47,10 +47,10 @@ export function Callback() {
       <select id="cb-time" className={`${input} [&>option]:text-ink`} value={time} onChange={(e) => setTime(e.target.value)}>
         {times.map((t) => <option key={t}>{t}</option>)}
       </select>
-      <button type="submit" className="min-h-12 bg-gold-deep px-7 text-[13px] font-medium uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#744f0b]">
+      <button type="submit" className="min-h-12 bg-gold-deep px-7 text-[13px] font-medium text-white transition-colors hover:bg-gold-darker">
         Request a callback
       </button>
-      {err ? <p role="alert" className="text-sm text-[#f3c2ad] md:col-span-4">{err}</p> : null}
+      {err ? <p role="alert" className="text-sm text-blush-light md:col-span-4">{err}</p> : null}
     </form>
   );
 }

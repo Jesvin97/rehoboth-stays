@@ -20,7 +20,7 @@ export type AddOnId = (typeof addOns)[number]["id"];
 
 export const coupons = [
   { code: "DIRECT10", title: "10% off when you book on our website", type: "percent", value: 10, minNights: 1 },
-  { code: "EARLY30", title: "₹750 off — booked 30+ days ahead", type: "flat", value: 750, minNights: 2 },
+  { code: "EARLY30", title: "₹750 off, booked 30+ days ahead", type: "flat", value: 750, minNights: 2 },
   { code: "STAY5", title: "15% off on stays of 5 nights or more", type: "percent", value: 15, minNights: 5 },
 ] as const;
 export type CouponCode = (typeof coupons)[number]["code"];
@@ -70,7 +70,7 @@ export function quote(input: QuoteInput): Quote | QuoteError {
   if (!room) return { ok: false, error: "Room not found." };
   const nights = nightsBetween(input.checkIn, input.checkOut);
   if (nights < 1) return { ok: false, error: "Check-out must be after check-in." };
-  if (nights > 30) return { ok: false, error: "Stays longer than 30 nights — please contact us." };
+  if (nights > 30) return { ok: false, error: "Stays longer than 30 nights, please contact us." };
   if (input.adults < 1 || input.adults > room.maxAdults) return { ok: false, error: `This room takes up to ${room.maxAdults} adults.` };
   if (input.children < 0 || input.children > room.maxChildren) return { ok: false, error: `This room takes up to ${room.maxChildren} children.` };
 

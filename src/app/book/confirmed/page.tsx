@@ -57,7 +57,7 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
               <Photo label={room.photos[0].label} src={room.photos[0].src} tone={room.photos[0].tone} className="h-[72px] w-24 shrink-0 rounded-[3px] text-[10px] [&>div]:p-2" />
               <div>
                 <strong className="text-lg">{room.name}</strong>
-                <div className="text-sm text-muted">{plan.name} · Booking ID {ref}</div>
+                <div className="text-sm text-muted">{plan.name}, Booking ID {ref}</div>
               </div>
             </div>
             <dl className="grid grid-cols-2 gap-3 text-[15px] sm:grid-cols-4">

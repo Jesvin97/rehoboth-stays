@@ -45,7 +45,7 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
                   className={`lift flex flex-wrap items-center justify-between gap-3.5 rounded-[3px] border-2 px-5 py-4 text-left ${on ? "border-accent bg-accent-wash" : "border-line bg-white"}`}
                 >
                   <span className="flex items-center gap-3.5">
-                    <span className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-2 ${on ? "border-accent" : "border-[#a9b8ad]"}`}>
+                    <span className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-2 ${on ? "border-accent" : "border-line-strong"}`}>
                       <span className={`h-2.5 w-2.5 rounded-full ${on ? "bg-accent" : ""}`} />
                     </span>
                     <span>
@@ -62,7 +62,7 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
             })}
           </div>
           <p className="text-sm text-muted">
-            Paid in full when you book. Cancellation is counted from your booking date — 50% refund within 2 days, 25% until day 4, then no refund.{" "}
+            Paid in full when you book. Cancellation is counted from your booking date, 50% refund within 2 days, 25% until day 4, then no refund.{" "}
             <Link href="/policies">Full policy</Link>
           </p>
         </section>
@@ -82,9 +82,9 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
                 >
                   <span className="flex items-center justify-between gap-2">
                     <strong>{a.name}</strong>
-                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 text-sm text-white ${on ? "border-accent bg-accent" : "border-[#a9b8ad] bg-white"}`}>{on ? "✓" : ""}</span>
+                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border-2 text-sm text-white ${on ? "border-accent bg-accent" : "border-line-strong bg-white"}`}>{on ? "✓" : ""}</span>
                   </span>
-                  <span className="text-sm text-muted">+ {inr(a.price)} · {a.unit}</span>
+                  <span className="text-sm text-muted">+ {inr(a.price)}, {a.unit}</span>
                 </button>
               );
             })}
@@ -92,10 +92,10 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
         </section>
       </div>
 
-      <aside aria-label="Book this room" className="sticky top-24 flex w-full max-w-[420px] flex-[1_1_340px] flex-col gap-4 rounded-[3px] border border-line bg-white p-6 shadow-[0_8px_28px_rgba(28,43,36,0.08)]">
+      <aside aria-label="Book this room" className="sticky top-24 flex w-full max-w-[420px] flex-[1_1_340px] flex-col gap-4 rounded-[3px] border border-line bg-white p-6 shadow-soft">
         <div>
           <strong className="font-display text-[28px]">{inr(room.rates[sel.plan])}</strong>
-          <span className="text-muted"> / night · {plans.find((p) => p.id === sel.plan)?.name}</span>
+          <span className="text-muted"> / night, {plans.find((p) => p.id === sel.plan)?.name}</span>
         </div>
         <div className="grid grid-cols-1 gap-2.5">
           <label className="field-label">
@@ -142,7 +142,7 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
           <button type="button" disabled className="btn-primary min-h-[52px] rounded-xl">Reserve now</button>
         )}
         <p className="text-center text-[13px] text-muted">
-          Full payment at booking · secured by Razorpay
+          Full payment at booking, secured by Razorpay
           <br />
           Book today: 50% refund until {formatShort(policy.fiftyUntil)}
         </p>

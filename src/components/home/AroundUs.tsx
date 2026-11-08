@@ -10,7 +10,6 @@ export function AroundUs() {
   return (
     <div className="grid grid-cols-1 gap-14 lg:grid-cols-[1fr_1.1fr]">
       <div className="flex flex-col gap-5">
-        <p className="eyebrow">Getting here &amp; around</p>
         <h2 className="h2">A base for exploring {site.region}</h2>
         <div className="ornament justify-start before:hidden" aria-hidden="true">✦</div>
         <p className="text-ink-soft">Choose a place to see how far it is from the home.</p>
@@ -26,18 +25,18 @@ export function AroundUs() {
                 }`}
               >
                 <span className="font-display text-[22px] font-medium">{pl.name}</span>
-                <span className="whitespace-nowrap text-[12px] uppercase tracking-[0.16em] text-muted">{pl.time}</span>
+                <span className="whitespace-nowrap text-[13px] text-muted">{pl.time}</span>
               </button>
             </li>
           ))}
         </ul>
       </div>
       <div className="flex min-h-[480px] flex-col justify-between bg-sage p-6">
-        <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-[#2e4238]">[Embedded Google Map]</span>
-        <div key={active} className="animate-fade-up flex flex-col gap-2 bg-white p-6 shadow-[0_12px_30px_rgba(28,43,36,0.12)]">
+        <span className="text-[13px] font-medium text-ink-deep">[Embedded Google Map]</span>
+        <div key={active} className="animate-fade-up flex flex-col gap-2 bg-white p-6 shadow-soft">
           <strong className="font-display text-[26px] font-medium">{p.name}</strong>
-          <span className="text-muted">{p.time} by car from the homestay · {p.note}</span>
-          <a href={site.social.maps} className="more-link mt-1">Get directions ›</a>
+          <span className="text-muted">{p.time} by car from the homestay, {p.note}</span>
+          <a href={site.social.maps} className="more-link mt-1">Get directions</a>
         </div>
       </div>
     </div>

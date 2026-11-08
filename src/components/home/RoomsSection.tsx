@@ -45,7 +45,7 @@ export function RoomsSection({ query = "", centered = false }: { query?: string;
             type="button"
             aria-pressed={filter === f.id}
             onClick={() => setFilter(f.id)}
-            className={`-mb-px min-h-12 border-b-2 text-[12px] font-medium uppercase tracking-[0.2em] transition-colors ${
+            className={`-mb-px min-h-12 border-b-2 text-[13px] font-medium transition-colors ${
               filter === f.id ? "border-accent text-accent" : "border-transparent text-muted hover:text-ink"
             }`}
           >

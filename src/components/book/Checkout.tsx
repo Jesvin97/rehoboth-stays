@@ -194,7 +194,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
         amount: Math.round(order.amount * 100),
         currency: order.currency,
         name: site.name,
-        description: `${room.name} · ${q?.nights} nights`,
+        description: `${room.name}, ${q?.nights} nights`,
         order_id: order.orderId,
         prefill: { name: name.trim(), email: email.trim() || undefined, contact: `+91${digits}` },
         notes: { booking_ref: order.ref },
@@ -204,7 +204,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
         onSuccess: (r) => verifyAndFinish(order, r),
         onFailure: () => {
           setPaying(false);
-          setPayError("Payment didn't go through and no money was taken. Your dates are still available — try again.");
+          setPayError("Payment didn't go through and no money was taken. Your dates are still available, try again.");
         },
         onDismiss: () => setPaying(false),
       },
@@ -212,7 +212,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
   }
 
   const chip = (on: boolean) =>
-    `min-h-[38px] rounded-full border-[1.5px] px-3.5 text-sm font-medium transition-colors ${on ? "border-accent bg-accent-tint text-accent-dark" : "border-[#cbd5cd] bg-white text-ink hover:border-accent"}`;
+    `min-h-[38px] rounded-full border-[1.5px] px-3.5 text-sm font-medium transition-colors ${on ? "border-accent bg-accent-tint text-accent-dark" : "border-line-mid bg-white text-ink hover:border-accent"}`;
   const toggleBtn = (on: boolean) => `min-h-[38px] rounded-full px-4 text-sm font-semibold transition-colors ${on ? "bg-white text-ink shadow-sm" : "text-muted"}`;
 
   return (
@@ -225,11 +225,11 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
         <ol aria-label="Progress" className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
           {steps.map((s, i) => (
             <li key={s.label} className={`flex items-center gap-2 text-sm font-semibold ${s.ok ? "text-ink" : "text-muted"}`}>
-              <span className={`flex h-[26px] w-[26px] items-center justify-center rounded-full border-2 text-[13px] transition-colors ${s.ok ? "border-accent bg-accent text-white" : "border-[#a9b8ad] bg-white"}`}>
+              <span className={`flex h-[26px] w-[26px] items-center justify-center rounded-full border-2 text-[13px] transition-colors ${s.ok ? "border-accent bg-accent text-white" : "border-line-strong bg-white"}`}>
                 {s.ok ? "✓" : i + 1}
               </span>
               {s.label}
-              {i < steps.length - 1 ? <span className="pl-0.5 text-[#a9b8ad]" aria-hidden="true">—</span> : null}
+              {i < steps.length - 1 ? <span className="pl-0.5 text-line-strong" aria-hidden="true">-</span> : null}
             </li>
           ))}
         </ol>
@@ -239,11 +239,11 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
         <div className="flex min-w-0 flex-[999_1_560px] flex-col gap-5">
           {/* 1. Trip */}
           <section className="card" aria-labelledby="trip-h">
-            <h2 id="trip-h" className="font-display text-2xl font-medium">1 · Your trip</h2>
+            <h2 id="trip-h" className="font-display text-2xl font-medium">1, Your trip</h2>
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="font-semibold">Dates</div>
-                <div className="text-ink-soft">{datesValid ? `${formatShort(checkIn)} – ${formatShort(checkOut)} · ${q?.nights} ${q?.nights === 1 ? "night" : "nights"}` : "Pick your dates"}</div>
+                <div className="text-ink-soft">{datesValid ? `${formatShort(checkIn)} to ${formatShort(checkOut)}, ${q?.nights} ${q?.nights === 1 ? "night" : "nights"}` : "Pick your dates"}</div>
               </div>
               <button type="button" className="min-h-9 font-semibold underline hover:text-accent" aria-expanded={editDates} onClick={() => setEditDates((v) => !v)}>
                 {editDates ? "Done" : "Edit"}
@@ -296,8 +296,8 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
               <div>
                 <div className="font-semibold">Room &amp; plan</div>
                 <div className="text-ink-soft">
-                  {room.name} · {plan.name}
-                  {initial.addOns.length ? ` · ${addOns.filter((a) => initial.addOns.includes(a.id)).map((a) => a.name).join(", ")}` : ""}
+                  {room.name}, {plan.name}
+                  {initial.addOns.length ? `, ${addOns.filter((a) => initial.addOns.includes(a.id)).map((a) => a.name).join(", ")}` : ""}
                 </div>
               </div>
               <Link href={`/rooms/${room.slug}?in=${checkIn}&out=${checkOut}&adults=${adults}&children=${children}`} className="min-h-9 font-semibold text-ink">
@@ -309,13 +309,13 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
           {/* 2. Guest */}
           <section className="card" aria-labelledby="guest-h">
             <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <h2 id="guest-h" className="font-display text-2xl font-medium">2 · Guest details</h2>
+              <h2 id="guest-h" className="font-display text-2xl font-medium">2, Guest details</h2>
               {verified ? <span className="animate-fade-up rounded-full bg-accent-tint px-2.5 py-1 text-[13px] font-semibold text-accent">✓ +91 {digits} verified</span> : null}
             </div>
 
             {!verified ? (
               <div className="flex flex-col gap-3">
-                <p className="text-ink-soft">Log in with your mobile number — we&apos;ll send booking updates on WhatsApp.</p>
+                <p className="text-ink-soft">Log in with your mobile number, we&apos;ll send booking updates on WhatsApp.</p>
                 <div className="flex flex-wrap items-end gap-2.5">
                   <label className="field-label flex-[1_1_220px]">
                     Mobile number
@@ -406,11 +406,11 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
 
           {/* 3. Payment */}
           <section className="card" aria-labelledby="pay-h">
-            <h2 id="pay-h" className="font-display text-2xl font-medium">3 · Payment</h2>
+            <h2 id="pay-h" className="font-display text-2xl font-medium">3, Payment</h2>
             <div className="flex flex-col gap-2 rounded-[3px] border-2 border-accent bg-accent-wash p-[18px]">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <strong className="text-lg">Pay in full to confirm</strong>
-                <strong className="font-display text-2xl">{q ? inr(q.total) : "—"}</strong>
+                <strong className="font-display text-2xl">{q ? inr(q.total) : "-"}</strong>
               </div>
               <span className="text-[15px] text-ink-soft">Your room is confirmed once the full amount is paid. Nothing is due at check-in.</span>
             </div>
@@ -423,7 +423,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
             </div>
             <ul className="flex flex-wrap gap-2">
               {["UPI", "Credit & debit cards", "Net banking", "Wallets"].map((m) => (
-                <li key={m} className="rounded-full border border-[#cbd5cd] px-3.5 py-1.5 text-sm">{m}</li>
+                <li key={m} className="rounded-full border border-line-mid px-3.5 py-1.5 text-sm">{m}</li>
               ))}
             </ul>
             <span className="text-[13px] text-muted">Card and bank details are entered on Razorpay, never on our site.</span>
@@ -440,14 +440,14 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
               </div>
               <div className="border-t-[5px] border-gold py-3 sm:px-3">
                 <div className="font-semibold">25% refund</div>
-                <div className="text-sm text-muted">{formatShort(policy.quarterFrom)} – {formatShort(policy.quarterUntil)}</div>
+                <div className="text-sm text-muted">{formatShort(policy.quarterFrom)} to {formatShort(policy.quarterUntil)}</div>
               </div>
               <div className="border-t-[5px] border-rust py-3 sm:pl-3">
                 <div className="font-semibold">No refund</div>
                 <div className="text-sm text-muted">From {formatShort(policy.noRefundFrom)}</div>
               </div>
             </div>
-            <p className="text-sm text-muted">Refunds go back through Razorpay to the original payment method in 5–7 working days. Times in IST.</p>
+            <p className="text-sm text-muted">Refunds go back through Razorpay to the original payment method in 5 to 7 working days. Times in IST.</p>
           </section>
 
           {/* Rules + confirm */}
@@ -461,7 +461,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
               <span>I agree to the house rules, the <Link href="/policies">cancellation policy</Link> and the terms of stay.</span>
             </label>
             {tried && missing.length ? (
-              <div role="alert" className="animate-fade-up rounded-[3px] bg-error-bg px-3.5 py-3 text-sm text-error-ink">Almost there — still needed: {missing.join(", ")}.</div>
+              <div role="alert" className="animate-fade-up rounded-[3px] bg-error-bg px-3.5 py-3 text-sm text-error-ink">Almost there, still needed: {missing.join(", ")}.</div>
             ) : null}
             {payError ? <div role="alert" className="animate-fade-up rounded-[3px] bg-error-bg px-3.5 py-3 text-sm text-error-ink">{payError}</div> : null}
             <button type="button" onClick={pay} disabled={paying} className="btn-primary min-h-14 rounded-xl text-[17px]">
@@ -476,10 +476,10 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
       </div>
 
       {/* Mobile sticky bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-line bg-white px-4 py-3 shadow-[0_-6px_18px_rgba(0,0,0,0.08)] lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-line bg-white px-4 py-3 shadow-bar lg:hidden">
         <div>
-          <strong className="text-lg">{q ? inr(q.total) : "—"}</strong>
-          <div className="text-[13px] text-muted">{q?.nights ?? 0} nights · pay in full via Razorpay</div>
+          <strong className="text-lg">{q ? inr(q.total) : "-"}</strong>
+          <div className="text-[13px] text-muted">{q?.nights ?? 0} nights, pay in full via Razorpay</div>
         </div>
         <button type="button" onClick={pay} disabled={paying} className="btn-primary min-h-12 rounded-[3px]">Book now</button>
       </div>
@@ -495,7 +495,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
           onFail={() => {
             setMock(null);
             setPaying(false);
-            setPayError("Payment didn't go through and no money was taken. Your dates are still available — try again.");
+            setPayError("Payment didn't go through and no money was taken. Your dates are still available, try again.");
           }}
           onSuccess={() =>
             verifyAndFinish(mock, {

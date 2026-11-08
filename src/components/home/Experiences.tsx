@@ -23,18 +23,18 @@ export function Experiences() {
           return (
             <article key={e.id} className="group relative flex min-h-[460px] flex-col justify-end overflow-hidden text-white">
               <Photo label={e.tab} tone={tones[i % tones.length]} dark align="start" className="absolute inset-0" zoom />
-              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,24,20,0)_35%,rgba(15,24,20,0.85)_100%)]" aria-hidden="true" />
+              <div className="absolute inset-0 bg-linear-to-b from-night/0 from-35% to-night/85" aria-hidden="true" />
               <div className="relative flex flex-col gap-3 p-6">
-                <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-gold-light">{e.meta}</span>
+                <span className="text-[13px] font-medium text-gold-light">{e.meta}</span>
                 <h3 className="font-display text-[28px] font-medium leading-tight">{e.title}</h3>
-                <p className="max-h-0 overflow-hidden text-[15px] text-white/85 opacity-0 transition-all duration-500 group-hover:max-h-40 group-hover:opacity-100 group-focus-within:max-h-40 group-focus-within:opacity-100 max-lg:max-h-40 max-lg:opacity-100">
+                <p className="text-[15px] text-white/85 opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100 max-lg:opacity-100">
                   {e.description}
                 </p>
                 <button
                   type="button"
                   aria-pressed={on}
                   onClick={() => toggle(e.id)}
-                  className={`mt-1 inline-flex min-h-11 items-center justify-center self-start border px-5 text-[12px] font-medium uppercase tracking-[0.18em] transition-colors ${
+                  className={`mt-1 inline-flex min-h-11 items-center justify-center self-start border px-5 text-[13px] font-medium transition-colors ${
                     on ? "border-gold-deep bg-gold-deep text-white" : "border-white/70 text-white hover:bg-white hover:text-ink"
                   }`}
                 >
@@ -49,7 +49,7 @@ export function Experiences() {
         {wanted.length ? (
           <>
             <span className="text-ink-soft">{wanted.length} {wanted.length === 1 ? "experience" : "experiences"} in your wishlist</span>
-            <a href={whatsappLink(message)} target="_blank" rel="noreferrer" className="btn-primary">Send to your host on WhatsApp</a>
+            <a href={whatsappLink(message)} target="_blank" rel="noreferrer" className="btn-primary">Send on WhatsApp</a>
           </>
         ) : (
           <span className="text-muted">Add experiences to your wishlist and your host will plan them before you arrive.</span>

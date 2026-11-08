@@ -16,7 +16,6 @@ export default async function RoomsPage({ searchParams }: { searchParams: Promis
       <section className="bg-mist">
         <div className="container-x flex flex-col gap-8 py-14">
           <div className="flex flex-col gap-3">
-            <p className="eyebrow">Stay</p>
             <h1 className="h2">Rooms &amp; cottages</h1>
           </div>
           <StaySearch initial={stay} />

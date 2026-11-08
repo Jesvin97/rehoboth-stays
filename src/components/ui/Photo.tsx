@@ -34,7 +34,7 @@ export function Photo({
           fill
           sizes={sizes}
           priority={priority}
-          className={`object-cover ${zoom ? "transition-transform duration-700 group-hover:scale-105" : ""}`}
+          className={`object-cover `}
         />
       </div>
     );
@@ -44,9 +44,9 @@ export function Photo({
       <div
         role="img"
         aria-label={label ? `Photo: ${label}` : "Photo"}
-        className={`flex h-full w-full p-4 text-[12px] font-semibold uppercase tracking-[0.06em] ${
+        className={`flex h-full w-full p-4 text-[13px] font-semibold ${
           align === "start" ? "items-start" : "items-end"
-        } ${dark ? "text-[#dce6de]" : "text-[#2e4238]"} ${zoom ? "transition-transform duration-700 group-hover:scale-105" : ""}`}
+        } ${dark ? "text-sage-pale" : "text-ink-deep"} `}
         style={{ backgroundColor: tone }}
       >
         {label ? `[${label}]` : null}

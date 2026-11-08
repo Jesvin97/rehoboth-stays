@@ -33,14 +33,14 @@ export function nightsBetween(checkIn: string, checkOut: string): number {
 /** "Fri, 13 Nov" */
 export function formatShort(iso: string): string {
   const d = parseISO(iso);
-  if (!d) return "—";
+  if (!d) return "-";
   return d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
 }
 
 /** "13 Nov 2026" */
 export function formatLong(iso: string): string {
   const d = parseISO(iso);
-  if (!d) return "—";
+  if (!d) return "-";
   return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
 }
 

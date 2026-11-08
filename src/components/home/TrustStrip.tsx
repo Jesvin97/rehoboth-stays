@@ -31,7 +31,7 @@ export function TrustStrip() {
             {it.icon}
           </svg>
           <span className="font-display text-[clamp(28px,3vw,40px)] font-medium leading-none">{it.value}</span>
-          <span className="text-[12px] uppercase tracking-[0.2em] text-muted">{it.label}</span>
+          <span className="text-[13px] text-muted">{it.label}</span>
         </li>
       ))}
     </ul>

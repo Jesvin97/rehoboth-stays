@@ -44,7 +44,7 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
         clear ? "bg-transparent text-white" : "bg-white text-ink shadow-[0_1px_0_var(--color-line)]"
       }`}
     >
-      <div className={`border-b text-[12px] tracking-[0.08em] transition-colors ${clear ? "border-white/15" : "border-line-soft bg-paper"}`}>
+      <div className={`border-b text-[13px] transition-colors ${clear ? "border-white/15" : "border-line-soft bg-paper"}`}>
         <div className="container-x flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-2">
           <span className={`max-sm:hidden ${clear ? "text-white/85" : "text-muted"}`}>{site.locationLine}</span>
           <div className="flex flex-wrap gap-5">
@@ -61,7 +61,7 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
             <Link
               key={n.href}
               href={n.href}
-              className={`relative text-[12px] font-medium uppercase tracking-[0.2em] no-underline after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-0 after:bg-gold after:transition-all hover:after:w-full ${
+              className={`relative text-[13px] font-medium no-underline after:absolute after:-bottom-1.5 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-gold after:transition-transform hover:after:scale-x-100 ${
                 clear ? "text-white hover:text-white" : "text-ink hover:text-accent"
               }`}
             >

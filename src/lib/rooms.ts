@@ -39,7 +39,7 @@ export const rooms: Room[] = [
     name: "[Heritage Room]",
     tagline: "[Original teak ceilings, opens onto the courtyard.]",
     description:
-      "[Short paragraph — the room's history, what you see when you wake up, and what makes it different from the other rooms.]",
+      "[Short paragraph, the room's history, what you see when you wake up, and what makes it different from the other rooms.]",
     baseOccupancy: 2,
     maxAdults: 3,
     maxChildren: 1,
@@ -64,7 +64,7 @@ export const rooms: Room[] = [
     name: "[Plantation Cottage]",
     tagline: "[Standalone cottage at the edge of the coffee.]",
     description:
-      "[Short paragraph — a standalone cottage at the edge of the estate, with its own verandah and a view over the plantation.]",
+      "[Short paragraph, a standalone cottage at the edge of the estate, with its own verandah and a view over the plantation.]",
     baseOccupancy: 2,
     maxAdults: 3,
     maxChildren: 2,
@@ -89,7 +89,7 @@ export const rooms: Room[] = [
     name: "[Family Suite]",
     tagline: "[Two bedrooms around a shared lounge.]",
     description:
-      "[Short paragraph — two connected bedrooms around a small lounge, ideal for families or two couples travelling together.]",
+      "[Short paragraph, two connected bedrooms around a small lounge, ideal for families or two couples travelling together.]",
     baseOccupancy: 4,
     maxAdults: 4,
     maxChildren: 2,
@@ -114,7 +114,7 @@ export const rooms: Room[] = [
     name: "[Whole Home]",
     tagline: "[Take over the house for a reunion or a team retreat.]",
     description:
-      "[Short paragraph — every room in the house, the dining hall and the verandah are yours, with a private cook for your group.]",
+      "[Short paragraph, every room in the house, the dining hall and the verandah are yours, with a private cook for your group.]",
     baseOccupancy: 8,
     maxAdults: 10,
     maxChildren: 4,

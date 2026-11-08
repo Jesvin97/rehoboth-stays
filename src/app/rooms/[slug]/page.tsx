@@ -46,7 +46,6 @@ export default async function RoomPage({
       <div className="container-x pb-24 pt-10">
         <RoomBooking room={room} initial={sel}>
           <div className="flex flex-col gap-3">
-            <p className="eyebrow">Room {index + 1} of {rooms.length}</p>
             <h1 className="font-display text-[clamp(36px,4vw,48px)] font-medium leading-[1.05]">{room.name}</h1>
             <ul className="flex flex-wrap gap-2.5 text-[15px] text-ink-soft">
               {room.chips.map((c) => (

@@ -27,28 +27,28 @@ export const experiences = [
     id: "estate-walk",
     tab: "Estate walk",
     title: "Plantation walk with your host",
-    meta: "90 min · Complimentary · Every morning",
+    meta: "90 min, Complimentary, Every morning",
     description: "[Walk through coffee, pepper and cardamom; see how each is grown, picked and dried.]",
   },
   {
     id: "cooking",
     tab: "Cook with us",
     title: "Cook a Kerala meal with the family",
-    meta: "2 hrs · ₹[PRICE] per person",
+    meta: "2 hrs, ₹[PRICE] per person",
     description: "[Grind the masala, make appam and stew, then sit down and eat what you cooked.]",
   },
   {
     id: "boat",
     tab: "Country boat",
     title: "Sunrise on a country boat",
-    meta: "1 hr · ₹[PRICE] per boat · On request",
+    meta: "1 hr, ₹[PRICE] per boat, On request",
     description: "[A local boatman takes you along the river while the village wakes up.]",
   },
   {
     id: "ayurveda",
     tab: "Ayurveda",
     title: "Ayurveda massage at home",
-    meta: "60 min · ₹[PRICE] · Visiting therapist",
+    meta: "60 min, ₹[PRICE], Visiting therapist",
     description: "[A certified therapist comes to the house for abhyanga or a head massage.]",
   },
 ];
@@ -62,10 +62,10 @@ export const places = [
 ];
 
 export const reviews = [
-  { text: "[Real guest review about the hosts — 2 lines.]", who: "[Guest] · [City] · [Month Year]", source: "Google" },
-  { text: "[Real guest review about the food — 2 lines.]", who: "[Guest] · [City] · [Month Year]", source: "Airbnb" },
-  { text: "[Real guest review about the rooms and the quiet — 2 lines.]", who: "[Guest] · [City] · [Month Year]", source: "Google" },
-  { text: "[Real guest review about the experiences — 2 lines.]", who: "[Guest] · [City] · [Month Year]", source: "Booking.com" },
+  { text: "[Real guest review about the hosts, 2 lines.]", who: "[Guest], [City], [Month Year]", source: "Google" },
+  { text: "[Real guest review about the food, 2 lines.]", who: "[Guest], [City], [Month Year]", source: "Airbnb" },
+  { text: "[Real guest review about the rooms and the quiet, 2 lines.]", who: "[Guest], [City], [Month Year]", source: "Google" },
+  { text: "[Real guest review about the experiences, 2 lines.]", who: "[Guest], [City], [Month Year]", source: "Booking.com" },
 ];
 
 export const faqs = [
@@ -75,13 +75,13 @@ export const faqs = [
   { q: "Can we bring children or pets?", a: "[Child policy, extra bed charges, and pet rules.]" },
   {
     q: "What is the cancellation policy?",
-    a: "It is counted from the day you book: cancel within 2 days of booking for a 50% refund, before the 5th day for a 25% refund, and after that there is no refund. Refunds go back through Razorpay to the original payment method in 5–7 working days.",
+    a: "It is counted from the day you book: cancel within 2 days of booking for a 50% refund, before the 5th day for a 25% refund, and after that there is no refund. Refunds go back through Razorpay to the original payment method in 5 to 7 working days.",
   },
-  { q: "How do I pay?", a: "The full amount is paid online when you book, through Razorpay — UPI, cards, net banking or wallets. Nothing is due at check-in." },
+  { q: "How do I pay?", a: "The full amount is paid online when you book, through Razorpay, UPI, cards, net banking or wallets. Nothing is due at check-in." },
 ];
 
 export const houseRules = [
-  `Check-in from 2 pm · check-out by 11 am`,
+  `Check-in from 2 pm, check-out by 11 am`,
   "Government ID for every guest",
   "No loud music after [10 pm]",
   "[No smoking inside the house]",

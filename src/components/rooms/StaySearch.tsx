@@ -20,7 +20,7 @@ export function StaySearch({ initial }: { initial: Stay }) {
   };
 
   return (
-    <div className="flex flex-col gap-4 rounded-[3px] bg-white p-[18px] shadow-[0_8px_28px_rgba(28,43,36,0.08)]">
+    <div className="flex flex-col gap-4 rounded-[3px] bg-white p-[18px] shadow-soft">
       <div className="grid grid-cols-1 items-end gap-3.5 sm:grid-cols-3">
         <label className="field-label">
           Check-in
@@ -53,7 +53,7 @@ export function StaySearch({ initial }: { initial: Stay }) {
       <p className="rounded-xl bg-accent-tint px-4 py-3 text-[15px]" aria-live="polite">
         {n >= 1 ? (
           <>
-            <strong>{formatShort(s.checkIn)} – {formatShort(s.checkOut)}</strong> · {n} {n === 1 ? "night" : "nights"}. Prices below are per night; pick a room to see your total.
+            <strong>{formatShort(s.checkIn)} to {formatShort(s.checkOut)}</strong>, {n} {n === 1 ? "night" : "nights"}. Prices below are per night; pick a room to see your total.
           </>
         ) : (
           "Check-out needs to be after check-in."

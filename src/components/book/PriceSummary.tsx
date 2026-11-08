@@ -47,13 +47,13 @@ export function PriceSummary({
         <div className="flex items-center gap-3.5">
           <Photo label={room.photos[0].label} src={room.photos[0].src} tone={room.photos[0].tone} className="h-[86px] w-[110px] shrink-0 rounded-xl text-[10px] [&>div]:p-2" />
           <div className="flex flex-col gap-0.5">
-            <span className="text-[13px] text-muted">Homestay · {site.region}</span>
+            <span className="text-[13px] text-muted">Homestay, {site.region}</span>
             <strong className="text-lg">{room.name}</strong>
             <span className="text-sm text-ink-soft">{planName}</span>
           </div>
         </div>
         <div className="flex flex-col gap-1 border-t border-line-soft pt-3.5 text-[15px]">
-          <div className="flex justify-between gap-3"><span className="text-muted">Dates</span><span>{formatShort(checkIn)} – {formatShort(checkOut)}</span></div>
+          <div className="flex justify-between gap-3"><span className="text-muted">Dates</span><span>{formatShort(checkIn)} to {formatShort(checkOut)}</span></div>
           <div className="flex justify-between gap-3"><span className="text-muted">Guests</span><span className="text-right">{guestLabel}</span></div>
         </div>
 
@@ -69,7 +69,7 @@ export function PriceSummary({
             <div className="flex justify-between"><span>Booking / service fee</span><span className="font-semibold text-accent">₹0</span></div>
             <div className="flex justify-between"><span>GST</span><span>{inr(q.gst)}</span></div>
             <div className="flex justify-between border-t border-line-soft pt-2.5 text-[19px] font-bold text-ink"><span>Total (INR)</span><span>{inr(q.total)}</span></div>
-            <div className="flex justify-between text-sm"><span>Payable now · full amount</span><strong className="text-ink">{inr(q.total)}</strong></div>
+            <div className="flex justify-between text-sm"><span>Payable now, full amount</span><strong className="text-ink">{inr(q.total)}</strong></div>
             <div className="flex justify-between text-sm"><span>Due at check-in</span><span>₹0</span></div>
           </div>
         ) : null}
@@ -96,11 +96,11 @@ export function PriceSummary({
           const eligible = nights >= c.minNights;
           const save = couponDiscount(c.code, roomCost, nights);
           return (
-            <div key={c.code} className={`flex items-center justify-between gap-2.5 rounded-xl border-[1.5px] border-dashed px-3.5 py-3 ${applied ? "border-accent bg-accent-wash" : "border-[#a9b8ad] bg-white"} ${eligible ? "" : "opacity-55"}`}>
+            <div key={c.code} className={`flex items-center justify-between gap-2.5 rounded-xl border-[1.5px] border-dashed px-3.5 py-3 ${applied ? "border-accent bg-accent-wash" : "border-line-strong bg-white"} ${eligible ? "" : "opacity-55"}`}>
               <div className="flex min-w-0 flex-col gap-0.5">
                 <code className="text-sm font-bold">{c.code}</code>
                 <span className="text-sm text-ink-soft">{c.title}</span>
-                <span className="text-xs text-muted">{applied ? `Applied · you save ${inr(save)}` : eligible ? `Save ${inr(save)}` : `Needs ${c.minNights}+ nights`}</span>
+                <span className="text-xs text-muted">{applied ? `Applied, you save ${inr(save)}` : eligible ? `Save ${inr(save)}` : `Needs ${c.minNights}+ nights`}</span>
               </div>
               <button
                 type="button"
