@@ -31,7 +31,7 @@ export const site = {
 } as const;
 
 /** Bump when the privacy notice text changes; stored with each consent. */
-export const PRIVACY_VERSION = "2026-11";
+export const PRIVACY_VERSION = "2026-11-b";
 
 export function whatsappLink(message?: string) {
   const base = `https://wa.me/${site.whatsappNumber}`;

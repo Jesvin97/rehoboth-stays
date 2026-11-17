@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS payment_events (
 
 CREATE TABLE IF NOT EXISTS leads (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  kind       TEXT NOT NULL,                     -- callback | newsletter
+  kind       TEXT NOT NULL,                     -- callback
   name       TEXT,
   phone      TEXT,
   email      TEXT,
