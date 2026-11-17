@@ -53,7 +53,6 @@ export default function PoliciesPage() {
           <ul className="flex flex-col gap-2 pl-5 text-ink-soft [&>li]:list-disc">
             <li><strong>Booking:</strong> your name, mobile number, email, dates and requests, plus a GST number and company name if you give them. We use these to confirm and manage your stay, contact you about it, and issue invoices.</li>
             <li><strong>Callback request:</strong> your name and mobile number, to call you back about a stay.</li>
-            <li><strong>Newsletter:</strong> your email address, to send you news and offers a few times a year.</li>
             <li><strong>At check-in:</strong> a government ID, as the law requires of guest accommodation. [Confirm with the host: how it is recorded and kept.]</li>
           </ul>
           <h3 className="font-display text-xl font-medium">Who we share it with</h3>
@@ -62,7 +61,7 @@ export default function PoliciesPage() {
           </p>
           <h3 className="font-display text-xl font-medium">How long we keep it</h3>
           <p className="text-ink-soft">
-            [Booking records: 3 years, for accounts and tax. Callback requests: 90 days. Newsletter addresses: until you unsubscribe. Confirm these periods with the host.] After that we delete the data.
+            [Booking records: 3 years, for accounts and tax. Callback requests: 90 days. Confirm these periods with the host.] After that we delete the data.
           </p>
           <h3 className="font-display text-xl font-medium">Your rights</h3>
           <p className="text-ink-soft">

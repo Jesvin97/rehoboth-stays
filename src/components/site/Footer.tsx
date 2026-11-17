@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { Logo } from "./Logo";
-import { Newsletter } from "./Newsletter";
 
 const cols = [
   { title: "Stay", links: [{ href: "/rooms", label: "Rooms & cottages" }, { href: "/rooms/whole-home", label: "Book the whole home" }] },
@@ -12,16 +11,6 @@ const cols = [
 export function Footer() {
   return (
     <footer className="bg-night text-[15px] text-sage">
-      <div className="border-b border-white/10">
-        <div className="container-x flex flex-col items-start justify-between gap-6 py-12 lg:flex-row lg:items-center">
-          <div className="flex flex-col gap-2">
-            <p className="text-[13px] font-medium text-gold-light">Letters from Ambattu Rehoboth</p>
-            <p className="font-display text-[28px] font-medium leading-tight text-white">Seasonal news from the estate, a few times a year.</p>
-          </div>
-          <Newsletter />
-        </div>
-      </div>
-
       <div className="container-x grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="flex flex-col gap-3">
           <Logo light />
