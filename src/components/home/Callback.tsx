@@ -7,7 +7,7 @@ const times = ["Morning (9 to 12)", "Afternoon (12 to 4)", "Evening (4 to 8)"];
 
 /**
  * "Request a callback" (from Voye). For now it opens WhatsApp with the request
- * filled in. TODO(backend): store requests and notify the host instead.
+ * filled in, and the request is also saved to the database.
  */
 export function Callback() {
   const [name, setName] = useState("");
@@ -22,6 +22,7 @@ export function Callback() {
     if (name.trim().length < 2) return setErr("Please add your name.");
     if (!/^[6-9]\d{9}$/.test(digits)) return setErr("Enter a valid 10-digit mobile number.");
     setErr("");
+    fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: "callback", name: name.trim(), phone: digits, note: time }) }).catch(() => {});
     const msg = `Hello! Please call me back about a stay.\nName: ${name.trim()}\nPhone: +91 ${digits}\nBest time: ${time}`;
     window.open(whatsappLink(msg), "_blank", "noopener,noreferrer");
     setSent(true);
