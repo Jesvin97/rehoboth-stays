@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const b = Buffer.from(sig);
   if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return NextResponse.json({ ok: false }, { status: 400 });
 
-  let event: { event?: string; payload?: { payment?: { entity?: { id?: string; order_id?: string; amount?: number; notes?: { booking_ref?: string } } } } };
+  let event: { event?: string; payload?: { payment?: { entity?: { id?: string; order_id?: string; amount?: number; status?: string; method?: string; notes?: { booking_ref?: string } } } } };
   try {
     event = JSON.parse(raw);
   } catch {
@@ -33,7 +33,9 @@ export async function POST(req: Request) {
   if (!p?.id || !p.order_id || !ref) return NextResponse.json({ ok: true, ignored: true });
 
   try {
-    await logPaymentEvent({ ref, event: event.event, orderId: p.order_id, paymentId: p.id, amountPaise: p.amount ?? null, raw });
+    // Keep only what is needed to reconcile. Razorpay's payload also holds the guest's email and phone: don't copy it.
+    const minimal = JSON.stringify({ id: p.id, order_id: p.order_id, amount: p.amount, status: p.status, method: p.method, booking_ref: ref });
+    await logPaymentEvent({ ref, event: event.event, orderId: p.order_id, paymentId: p.id, amountPaise: p.amount ?? null, raw: minimal });
     const booking = await getBooking(ref);
     // Only confirm when the amount paid matches the total the server calculated.
     if (!booking || Math.round(booking.total * 100) !== p.amount) {

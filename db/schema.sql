@@ -27,7 +27,9 @@ CREATE TABLE IF NOT EXISTS bookings (
   razorpay_payment_id TEXT,
   created_at          INTEGER NOT NULL,         -- epoch ms
   hold_expires_at     INTEGER NOT NULL,         -- a pending booking blocks the dates until then
-  paid_at             INTEGER
+  paid_at             INTEGER,
+  consent_at          INTEGER,                  -- when the guest agreed to the privacy notice
+  consent_version     TEXT                      -- which version of the notice they agreed to
 );
 CREATE INDEX IF NOT EXISTS idx_bookings_dates ON bookings (check_in, check_out);
 CREATE INDEX IF NOT EXISTS idx_bookings_room ON bookings (room, status);
@@ -52,5 +54,7 @@ CREATE TABLE IF NOT EXISTS leads (
   phone      TEXT,
   email      TEXT,
   note       TEXT,
-  created_at INTEGER NOT NULL
+  created_at INTEGER NOT NULL,
+  consent_at INTEGER,
+  consent_version TEXT
 );

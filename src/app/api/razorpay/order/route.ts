@@ -5,6 +5,7 @@ import { todayIST } from "@/lib/dates";
 import { bookingRef, isCheckoutRequest } from "@/lib/booking-schema";
 import { createOrder, razorpayConfigured } from "@/lib/razorpay-server";
 import { d1Configured } from "@/lib/d1";
+import { piiConfigured } from "@/lib/pii";
 import { attachOrder, cancelBooking, createPendingBooking } from "@/lib/bookings";
 
 /**
@@ -41,8 +42,8 @@ export async function POST(req: Request) {
   }
 
   // Live payments must never run without the database, or a paid stay could go unrecorded.
-  if (!d1Configured()) {
-    console.error("Razorpay is live but the D1 database is not configured.");
+  if (!d1Configured() || !piiConfigured()) {
+    console.error("Razorpay is live but the database or PII_ENCRYPTION_KEY is not configured.");
     return NextResponse.json({ error: "Online booking is temporarily unavailable. Please call us to book." }, { status: 503 });
   }
 
@@ -65,7 +66,6 @@ export async function POST(req: Request) {
         check_in: body.checkIn,
         check_out: body.checkOut,
         guests: `${body.adults}A ${body.children}C`,
-        guest_phone: body.guest.phone,
       },
     });
     await attachOrder(ref, order.id);
