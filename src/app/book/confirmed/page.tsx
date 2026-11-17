@@ -9,6 +9,9 @@ import { formatShort, parseISO } from "@/lib/dates";
 import { cancellationSchedule } from "@/lib/cancellation";
 import { site } from "@/lib/site";
 import type { SearchParams } from "@/lib/booking-params";
+import { razorpayConfigured } from "@/lib/razorpay-server";
+import { d1Configured } from "@/lib/d1";
+import { getBooking } from "@/lib/bookings";
 
 export const metadata: Metadata = {
   title: "Booking confirmed",
@@ -18,26 +21,31 @@ export const metadata: Metadata = {
 const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? "";
 
 /**
- * Confirmation screen. Details come from the URL for now.
- * TODO(backend): load the saved booking by `ref` instead of trusting the query string.
+ * Confirmation screen. With live payments, the saved booking is loaded by `ref`
+ * (and must be paid); in demo mode the details come from the URL.
  */
 export default async function ConfirmedPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const sp = await searchParams;
-  const room = getRoom(one(sp.room));
   const ref = one(sp.ref);
+  const live = razorpayConfigured() && d1Configured();
+  const saved = live && ref ? await getBooking(ref).catch(() => null) : null;
+  if (live && saved?.status !== "paid") redirect("/");
+
+  const room = getRoom(saved?.room ?? one(sp.room));
   if (!room || !ref) redirect("/");
 
-  const checkIn = one(sp.in);
-  const checkOut = one(sp.out);
-  const adults = Number(one(sp.adults)) || 1;
-  const children = Number(one(sp.children)) || 0;
-  const total = Number(one(sp.total)) || 0;
-  const plan = plans.find((p) => p.id === one(sp.plan)) ?? plans[0];
-  const booked = parseISO(one(sp.booked)) ? one(sp.booked) : checkIn;
+  const checkIn = saved?.check_in ?? one(sp.in);
+  const checkOut = saved?.check_out ?? one(sp.out);
+  const adults = saved?.adults ?? (Number(one(sp.adults)) || 1);
+  const children = saved?.children ?? (Number(one(sp.children)) || 0);
+  const total = saved?.total ?? (Number(one(sp.total)) || 0);
+  const plan = plans.find((p) => p.id === (saved?.plan ?? one(sp.plan))) ?? plans[0];
+  const savedDay = saved ? new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date(saved.created_at)) : "";
+  const booked = savedDay || (parseISO(one(sp.booked)) ? one(sp.booked) : checkIn);
   const policy = cancellationSchedule(booked);
   const guests = `${adults} ${adults === 1 ? "adult" : "adults"}${children ? `, ${children} ${children === 1 ? "child" : "children"}` : ""}`;
-  const firstName = one(sp.name) || "friend";
-  const phone = one(sp.phone);
+  const firstName = (saved?.guest_name ?? one(sp.name)).trim().split(" ")[0] || "friend";
+  const phone = saved?.phone ?? one(sp.phone);
 
   return (
     <>

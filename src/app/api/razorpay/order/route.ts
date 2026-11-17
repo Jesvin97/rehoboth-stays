@@ -4,6 +4,8 @@ import { getRoom } from "@/lib/rooms";
 import { todayIST } from "@/lib/dates";
 import { bookingRef, isCheckoutRequest } from "@/lib/booking-schema";
 import { createOrder, razorpayConfigured } from "@/lib/razorpay-server";
+import { d1Configured } from "@/lib/d1";
+import { attachOrder, cancelBooking, createPendingBooking } from "@/lib/bookings";
 
 /**
  * Creates a Razorpay order for the FULL amount of the stay.
@@ -30,13 +32,27 @@ export async function POST(req: Request) {
   });
   if (!q.ok) return NextResponse.json({ error: q.error }, { status: 400 });
 
-  // TODO(backend): check live availability for these dates before taking payment.
-
   const ref = bookingRef();
   const room = getRoom(body.room)!;
 
+  // Demo mode (no Razorpay keys): nothing is saved and no money moves.
   if (!razorpayConfigured()) {
     return NextResponse.json({ mode: "mock", ref, orderId: `order_mock_${ref}`, amount: q.total, currency: "INR" });
+  }
+
+  // Live payments must never run without the database, or a paid stay could go unrecorded.
+  if (!d1Configured()) {
+    console.error("Razorpay is live but the D1 database is not configured.");
+    return NextResponse.json({ error: "Online booking is temporarily unavailable. Please call us to book." }, { status: 503 });
+  }
+
+  // Hold the dates (atomic availability check + insert) before taking payment.
+  try {
+    const held = await createPendingBooking(ref, body, q.total);
+    if (!held) return NextResponse.json({ error: "Sorry, those dates were just taken. Please choose different dates." }, { status: 409 });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "We couldn't reserve your dates. Please try again in a moment." }, { status: 502 });
   }
 
   try {
@@ -52,6 +68,7 @@ export async function POST(req: Request) {
         guest_phone: body.guest.phone,
       },
     });
+    await attachOrder(ref, order.id);
     return NextResponse.json({
       mode: "live",
       ref,
@@ -62,6 +79,7 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error(err);
+    await cancelBooking(ref).catch(() => {});
     return NextResponse.json({ error: "We couldn't start the payment. Please try again in a moment." }, { status: 502 });
   }
 }

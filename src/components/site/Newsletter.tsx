@@ -4,7 +4,7 @@ import { useState } from "react";
 
 /**
  * Newsletter sign-up.
- * TODO(backend): send the address to a mailing list (Mailchimp, Brevo, etc.).
+ * Addresses are saved to the database; connect a mailing tool later if needed.
  */
 export function Newsletter() {
   const [email, setEmail] = useState("");
@@ -22,6 +22,7 @@ export function Newsletter() {
         e.preventDefault();
         if (!/^\S+@\S+\.\S+$/.test(email)) return setErr("Please enter a valid email address.");
         setErr("");
+        fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: "newsletter", email: email.trim() }) }).catch(() => {});
         setDone(true);
       }}
     >
