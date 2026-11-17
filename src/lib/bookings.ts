@@ -1,6 +1,8 @@
 import "server-only";
 import { d1, type D1Param } from "./d1";
 import type { CheckoutRequest } from "./booking-schema";
+import { decryptPII, encryptPII } from "./pii";
+import { PRIVACY_VERSION } from "./site";
 
 /** How long an unpaid booking holds its dates while the guest pays. */
 const HOLD_MS = 20 * 60 * 1000;
@@ -34,17 +36,21 @@ export async function createPendingBooking(ref: string, req: CheckoutRequest, to
   const params: D1Param[] = [
     ref, req.room, req.plan, req.checkIn, req.checkOut, req.adults, req.children,
     JSON.stringify(req.addOns), req.coupon, total,
-    g.name.trim(), g.phone, g.email?.trim() || null, g.bookingFor, g.otherName ?? null, g.otherPhone ?? null,
-    g.gstin ?? null, g.company ?? null, JSON.stringify(g.requests ?? []), g.message?.slice(0, 1000) || null,
-    now, now + HOLD_MS,
+    // Personal data is encrypted before it leaves the server.
+    encryptPII(g.name.trim(), "bookings.guest_name"), encryptPII(g.phone, "bookings.phone"),
+    encryptPII(g.email?.trim(), "bookings.email"), g.bookingFor,
+    encryptPII(g.otherName, "bookings.other_name"), encryptPII(g.otherPhone, "bookings.other_phone"),
+    encryptPII(g.gstin, "bookings.gstin"), encryptPII(g.company, "bookings.company"),
+    JSON.stringify(g.requests ?? []), encryptPII(g.message?.slice(0, 1000), "bookings.message"),
+    now, now + HOLD_MS, now, PRIVACY_VERSION,
     // conflict check
     req.checkOut, req.checkIn, now, req.room, req.room,
   ];
   const r = await d1(
     `INSERT INTO bookings (ref, room, plan, check_in, check_out, adults, children, add_ons, coupon, total, status,
        guest_name, phone, email, booking_for, other_name, other_phone, gstin, company, requests, message,
-       razorpay_order_id, created_at, hold_expires_at)
-     SELECT ?,?,?,?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?,NULL,?,?
+       razorpay_order_id, created_at, hold_expires_at, consent_at, consent_version)
+     SELECT ?,?,?,?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?,NULL,?,?,?,?
      WHERE NOT EXISTS (
        SELECT 1 FROM bookings b
        WHERE b.check_in < ? AND b.check_out > ?
@@ -66,7 +72,10 @@ export async function cancelBooking(ref: string) {
 
 export async function getBooking(ref: string): Promise<BookingRow | null> {
   const r = await d1<BookingRow>("SELECT * FROM bookings WHERE ref = ?", [ref]);
-  return r.results[0] ?? null;
+  const row = r.results[0];
+  if (!row) return null;
+  // Name and phone are encrypted at rest; decrypt only what the caller needs.
+  return { ...row, guest_name: decryptPII(row.guest_name, "bookings.guest_name") ?? "", phone: decryptPII(row.phone, "bookings.phone") ?? "" };
 }
 
 /**

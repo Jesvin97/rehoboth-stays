@@ -10,6 +10,8 @@ export type CheckoutRequest = {
   children: number;
   addOns: string[];
   coupon: string | null;
+  /** The guest ticked the privacy-notice consent box. */
+  consent: boolean;
   guest: {
     name: string;
     phone: string; // 10 digits
@@ -36,6 +38,7 @@ export function isCheckoutRequest(x: unknown): x is CheckoutRequest {
     typeof r.adults === "number" &&
     typeof r.children === "number" &&
     Array.isArray(r.addOns) &&
+    r.consent === true &&
     !!g &&
     typeof g.name === "string" &&
     g.name.trim().length > 1 &&

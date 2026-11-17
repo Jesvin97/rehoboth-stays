@@ -12,6 +12,7 @@ import { site } from "@/lib/site";
 import type { BookingSelection } from "@/lib/booking-params";
 import type { CheckoutRequest } from "@/lib/booking-schema";
 import { loadRazorpay, openRazorpay, type RazorpaySuccess } from "@/lib/razorpay-client";
+import { Consent } from "../ui/Consent";
 import { Stepper } from "../ui/Stepper";
 import { ChevronLeft, Lock } from "../ui/Icons";
 import { PriceSummary } from "./PriceSummary";
@@ -57,6 +58,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
 
   // Agree + pay
   const [agree, setAgree] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [tried, setTried] = useState(false);
   const [paying, setPaying] = useState(false);
   const [payError, setPayError] = useState("");
@@ -78,11 +80,12 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
   if (name.trim().length < 2) missing.push("your name");
   if (bookingFor === "other" && otherName.trim().length < 2) missing.push("the guest's name");
   if (!agree) missing.push("agreeing to the house rules");
+  if (!consent) missing.push("consent to the privacy notice");
 
   const steps = [
     { label: "Your trip", ok: datesValid && !!q },
     { label: "Guest details", ok: verified && name.trim().length >= 2 },
-    { label: "Payment", ok: agree },
+    { label: "Payment", ok: agree && consent },
   ];
 
   async function sendOtp() {
@@ -156,6 +159,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
       children,
       addOns: initial.addOns,
       coupon,
+      consent,
       guest: {
         name: name.trim(),
         phone: digits,
@@ -460,6 +464,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
               <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-accent" />
               <span>I agree to the house rules, the <Link href="/policies">cancellation policy</Link> and the terms of stay.</span>
             </label>
+            <Consent id="checkout-consent" checked={consent} onChange={setConsent} purpose="my name, phone, email and any GST details to manage this booking, and share them with Razorpay to take payment" />
             {tried && missing.length ? (
               <div role="alert" className="animate-fade-up rounded-[3px] bg-error-bg px-3.5 py-3 text-sm text-error-ink">Almost there, still needed: {missing.join(", ")}.</div>
             ) : null}

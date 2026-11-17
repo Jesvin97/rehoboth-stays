@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Consent } from "../ui/Consent";
 
 /**
  * Newsletter sign-up.
@@ -10,6 +11,7 @@ export function Newsletter() {
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
   const [err, setErr] = useState("");
+  const [consent, setConsent] = useState(false);
 
   if (done) {
     return <p className="animate-fade-up text-gold-light" role="status">Thank you, we&apos;ll write a few times a year.</p>;
@@ -21,8 +23,9 @@ export function Newsletter() {
       onSubmit={(e) => {
         e.preventDefault();
         if (!/^\S+@\S+\.\S+$/.test(email)) return setErr("Please enter a valid email address.");
+        if (!consent) return setErr("Please tick the box to agree before subscribing.");
         setErr("");
-        fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: "newsletter", email: email.trim() }) }).catch(() => {});
+        fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: "newsletter", email: email.trim(), consent: true }) }).catch(() => {});
         setDone(true);
       }}
     >
@@ -41,6 +44,7 @@ export function Newsletter() {
           Subscribe
         </button>
       </div>
+      <Consent id="newsletter-consent" tone="dark" checked={consent} onChange={setConsent} purpose="my email address to send me news and offers a few times a year" />
       {err ? <span role="alert" className="text-sm text-blush">{err}</span> : null}
     </form>
   );

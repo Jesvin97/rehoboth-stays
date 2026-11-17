@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SiteShell } from "@/components/site/SiteShell";
 import { houseRules } from "@/lib/content";
-import { site } from "@/lib/site";
+import { site, PRIVACY_VERSION } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Policies",
@@ -45,9 +45,32 @@ export default function PoliciesPage() {
         </section>
 
         <section id="privacy" className="flex flex-col gap-4">
-          <h2 className="font-display text-[28px] font-medium">Privacy</h2>
+          <h2 className="font-display text-[28px] font-medium">Privacy notice</h2>
           <p className="text-ink-soft">
-            [Privacy policy to be supplied by the client, what guest data is collected (name, phone, email, ID at check-in), why, how long it is kept, and who it is shared with (Razorpay for payments). Card details are handled by Razorpay and never stored by us.]
+            {site.name} collects and uses your personal data only as described here, under India&apos;s Digital Personal Data Protection Act, 2023. Version {PRIVACY_VERSION}.
+          </p>
+          <h3 className="font-display text-xl font-medium">What we collect and why</h3>
+          <ul className="flex flex-col gap-2 pl-5 text-ink-soft [&>li]:list-disc">
+            <li><strong>Booking:</strong> your name, mobile number, email, dates and requests, plus a GST number and company name if you give them. We use these to confirm and manage your stay, contact you about it, and issue invoices.</li>
+            <li><strong>Callback request:</strong> your name and mobile number, to call you back about a stay.</li>
+            <li><strong>Newsletter:</strong> your email address, to send you news and offers a few times a year.</li>
+            <li><strong>At check-in:</strong> a government ID, as the law requires of guest accommodation. [Confirm with the host: how it is recorded and kept.]</li>
+          </ul>
+          <h3 className="font-display text-xl font-medium">Who we share it with</h3>
+          <p className="text-ink-soft">
+            Razorpay processes your payment; card and UPI details go to Razorpay and are never stored by us. Your booking details are stored with our database and hosting providers (Cloudflare and Vercel), who handle them only for us. Phone, email, name and GST details are encrypted before they are stored. We do not sell your data.
+          </p>
+          <h3 className="font-display text-xl font-medium">How long we keep it</h3>
+          <p className="text-ink-soft">
+            [Booking records: 3 years, for accounts and tax. Callback requests: 90 days. Newsletter addresses: until you unsubscribe. Confirm these periods with the host.] After that we delete the data.
+          </p>
+          <h3 className="font-display text-xl font-medium">Your rights</h3>
+          <p className="text-ink-soft">
+            You can ask to see the data we hold about you, correct it, have it deleted, or withdraw your consent at any time. Withdrawing consent does not affect what we did before. Write to <a href={`mailto:${site.email}`}>{site.email}</a> or call {site.phone}; we aim to reply within [7] days.
+          </p>
+          <h3 className="font-display text-xl font-medium">Complaints</h3>
+          <p className="text-ink-soft">
+            Contact our grievance officer, [Name], at <a href={`mailto:${site.email}`}>{site.email}</a>. If you are not satisfied, you can complain to the Data Protection Board of India.
           </p>
         </section>
       </div>
