@@ -3,7 +3,7 @@ import { nightsBetween } from "./dates";
 
 /**
  * Pricing is shared by the browser (to show the summary) and the server
- * (to create the Razorpay order). The server ALWAYS recalculates — never
+ * (to create the Cashfree order). The server ALWAYS recalculates — never
  * trust an amount sent from the browser.
  */
 

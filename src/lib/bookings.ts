@@ -20,8 +20,8 @@ export type BookingRow = {
   guest_name: string;
   phone: string;
   created_at: number;
-  razorpay_order_id: string | null;
-  razorpay_payment_id: string | null;
+  provider_order_id: string | null;
+  provider_payment_id: string | null;
 };
 
 /**
@@ -49,7 +49,7 @@ export async function createPendingBooking(ref: string, req: CheckoutRequest, to
   const r = await d1(
     `INSERT INTO bookings (ref, room, plan, check_in, check_out, adults, children, add_ons, coupon, total, status,
        guest_name, phone, email, booking_for, other_name, other_phone, gstin, company, requests, message,
-       razorpay_order_id, created_at, hold_expires_at, consent_at, consent_version)
+       provider_order_id, created_at, hold_expires_at, consent_at, consent_version)
      SELECT ?,?,?,?,?,?,?,?,?,?,'pending',?,?,?,?,?,?,?,?,?,?,NULL,?,?,?,?
      WHERE NOT EXISTS (
        SELECT 1 FROM bookings b
@@ -63,7 +63,7 @@ export async function createPendingBooking(ref: string, req: CheckoutRequest, to
 }
 
 export async function attachOrder(ref: string, orderId: string) {
-  await d1("UPDATE bookings SET razorpay_order_id = ? WHERE ref = ? AND status = 'pending'", [orderId, ref]);
+  await d1("UPDATE bookings SET provider_order_id = ? WHERE ref = ? AND status = 'pending'", [orderId, ref]);
 }
 
 export async function cancelBooking(ref: string) {
@@ -86,12 +86,12 @@ export async function getBooking(ref: string): Promise<BookingRow | null> {
  */
 export async function markPaid(ref: string, orderId: string, paymentId: string): Promise<"paid" | "mismatch" | "needs_review"> {
   const b = await getBooking(ref);
-  if (!b || b.razorpay_order_id !== orderId) return "mismatch";
+  if (!b || b.provider_order_id !== orderId) return "mismatch";
   if (b.status === "paid") return "paid";
 
   const r = await d1(
-    `UPDATE bookings SET status = 'paid', razorpay_payment_id = ?, paid_at = ?
-     WHERE ref = ? AND razorpay_order_id = ? AND status IN ('pending', 'needs_review')
+    `UPDATE bookings SET status = 'paid', provider_payment_id = ?, paid_at = ?
+     WHERE ref = ? AND provider_order_id = ? AND status IN ('pending', 'needs_review')
        AND NOT EXISTS (
          SELECT 1 FROM bookings o
          WHERE o.ref != ? AND o.status = 'paid' AND o.check_in < ? AND o.check_out > ?
@@ -100,7 +100,7 @@ export async function markPaid(ref: string, orderId: string, paymentId: string):
     [paymentId, Date.now(), ref, orderId, ref, b.check_out, b.check_in, b.room, b.room],
   );
   if (r.meta.changes > 0) return "paid";
-  await d1("UPDATE bookings SET status = 'needs_review', razorpay_payment_id = ? WHERE ref = ? AND status = 'pending'", [paymentId, ref]);
+  await d1("UPDATE bookings SET status = 'needs_review', provider_payment_id = ? WHERE ref = ? AND status = 'pending'", [paymentId, ref]);
   return "needs_review";
 }
 

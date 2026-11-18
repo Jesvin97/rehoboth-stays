@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS bookings (
   company             TEXT,
   requests            TEXT NOT NULL DEFAULT '[]',
   message             TEXT,
-  razorpay_order_id   TEXT,
-  razorpay_payment_id TEXT,
+  provider_order_id   TEXT,                  -- Cashfree cf_order_id
+  provider_payment_id TEXT,
   created_at          INTEGER NOT NULL,         -- epoch ms
   hold_expires_at     INTEGER NOT NULL,         -- a pending booking blocks the dates until then
   paid_at             INTEGER,
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS bookings (
 );
 CREATE INDEX IF NOT EXISTS idx_bookings_dates ON bookings (check_in, check_out);
 CREATE INDEX IF NOT EXISTS idx_bookings_room ON bookings (room, status);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_order ON bookings (razorpay_order_id) WHERE razorpay_order_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_bookings_order ON bookings (provider_order_id) WHERE provider_order_id IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS payment_events (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,

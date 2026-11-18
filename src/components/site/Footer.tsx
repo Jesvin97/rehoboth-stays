@@ -30,7 +30,7 @@ export function Footer() {
       </div>
 
       <div className="container-x flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pb-10 pt-6 text-[13px] text-sage-dim">
-        <span>© {new Date().getFullYear()} {site.name}. Payments secured by Razorpay.</span>
+        <span>© {new Date().getFullYear()} {site.name}. Payments secured by Cashfree.</span>
         <span className="flex flex-wrap gap-5">
           <a href={site.social.instagram} className="text-sage-dim no-underline hover:text-white">Instagram</a>
           <a href={site.social.facebook} className="text-sage-dim no-underline hover:text-white">Facebook</a>

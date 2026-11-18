@@ -6,7 +6,7 @@ import { site } from "@/lib/site";
 import { Close } from "../ui/Icons";
 
 /**
- * Stand-in for Razorpay Checkout, shown only when no Razorpay keys are set.
+ * Stand-in for Cashfree Checkout, shown only when no Cashfree keys are set.
  * Lets the full flow (success and failure) be demoed without real payments.
  */
 export function MockGateway({
@@ -31,7 +31,7 @@ export function MockGateway({
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center bg-night/55 p-4">
-      <div role="dialog" aria-modal="true" aria-label="Razorpay checkout (test mode)" className="animate-fade-up w-[420px] max-w-full overflow-hidden rounded-[3px] bg-white shadow-float">
+      <div role="dialog" aria-modal="true" aria-label="Cashfree checkout (test mode)" className="animate-fade-up w-[420px] max-w-full overflow-hidden rounded-[3px] bg-white shadow-float">
         <div className="flex items-center justify-between gap-3 border-b border-line-soft px-4.5 py-4">
           <div className="flex flex-col">
             <strong>{site.name}</strong>
@@ -50,9 +50,9 @@ export function MockGateway({
         ) : (
           <div className="flex flex-col gap-3 p-4.5">
             <div className="flex h-[200px] items-center justify-center rounded-xl bg-sage p-5 text-center text-xs font-semibold text-ink-deep">
-              [Razorpay Checkout opens here, UPI, cards, net banking, wallets]
+              [Cashfree Checkout opens here, UPI, cards, net banking, wallets]
             </div>
-            <span className="text-center text-[13px] text-muted">Test mode: no Razorpay keys are set. Choose an outcome.</span>
+            <span className="text-center text-[13px] text-muted">Test mode: no Cashfree keys are set. Choose an outcome.</span>
             <button
               type="button"
               className="btn-primary min-h-12 rounded-[3px]"

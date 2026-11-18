@@ -142,7 +142,7 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
           <button type="button" disabled className="btn-primary min-h-[52px] rounded-xl">Reserve now</button>
         )}
         <p className="text-center text-[13px] text-muted">
-          Full payment at booking, secured by Razorpay
+          Full payment at booking, secured by Cashfree
           <br />
           Book today: 50% refund until {formatShort(policy.fiftyUntil)}
         </p>
