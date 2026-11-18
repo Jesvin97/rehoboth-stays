@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { plans, type Room } from "@/lib/rooms";
 import { addOns, inr, quote } from "@/lib/pricing";
-import { addDays, earliestCheckIn, formatShort, nightsBetween, todayIST } from "@/lib/dates";
+import { addDays, formatShort, nightsBetween, todayIST } from "@/lib/dates";
 import { RefundTimeline } from "../ui/RefundTimeline";
 import { houseRules } from "@/lib/content";
 import { site } from "@/lib/site";
@@ -29,7 +29,6 @@ type OrderResponse =
 export function Checkout({ room, initial }: { room: Room; initial: BookingSelection }) {
   const router = useRouter();
   const today = todayIST();
-  const earliest = earliestCheckIn();
 
   // Trip
   const [checkIn, setCheckIn] = useState(initial.checkIn);
@@ -73,7 +72,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
     const r = quote({ roomSlug: room.slug, plan: initial.plan, checkIn, checkOut, adults, children, addOns: initial.addOns, coupon });
     return r.ok ? r : null;
   }, [room.slug, initial.plan, initial.addOns, checkIn, checkOut, adults, children, coupon]);
-  const datesValid = nightsBetween(checkIn, checkOut) >= 1 && checkIn >= earliest;
+  const datesValid = nightsBetween(checkIn, checkOut) >= 1 && checkIn >= today;
   const guestLabel = `${adults} ${adults === 1 ? "adult" : "adults"}${children ? `, ${children} ${children === 1 ? "child" : "children"}` : ""}`;
 
   const { unavailable } = useUnavailableRooms(datesValid ? checkIn : "", datesValid ? checkOut : "");
@@ -263,7 +262,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
                   <input
                     className="field"
                     type="date"
-                    min={earliest}
+                    min={today}
                     value={checkIn}
                     onChange={(e) => {
                       const v = e.target.value;
@@ -279,7 +278,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
               </div>
             ) : null}
             {datesBooked ? <p role="alert" className="rounded-[3px] bg-error-bg px-3 py-2.5 text-sm text-error-ink">Sorry, these dates have just been booked. Please choose other dates.</p> : null}
-            {!datesValid ? <p role="alert" className="rounded-[3px] bg-error-bg px-3 py-2.5 text-sm text-error-ink">Check-out must be after check-in, and check-in must be tomorrow or later.</p> : null}
+            {!datesValid ? <p role="alert" className="rounded-[3px] bg-error-bg px-3 py-2.5 text-sm text-error-ink">Check-out must be after check-in, and check-in can&apos;t be in the past.</p> : null}
 
             <div className="flex items-start justify-between gap-4 border-t border-line-soft pt-4">
               <div>

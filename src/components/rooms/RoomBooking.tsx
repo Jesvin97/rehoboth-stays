@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { plans, type Room } from "@/lib/rooms";
 import { addOns, inr, quote } from "@/lib/pricing";
-import { addDays, earliestCheckIn, formatShort, nightsBetween, todayIST } from "@/lib/dates";
+import { addDays, formatShort, nightsBetween, todayIST } from "@/lib/dates";
 import { selectionQuery, type BookingSelection } from "@/lib/booking-params";
 import { refundLabel, refundPercent } from "@/lib/cancellation";
 import { Stepper } from "../ui/Stepper";
@@ -23,7 +23,6 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
   const set = (patch: Partial<BookingSelection>) => setSel((s) => ({ ...s, ...patch }));
   const q = quote({ roomSlug: room.slug, plan: sel.plan, checkIn: sel.checkIn, checkOut: sel.checkOut, adults: sel.adults, children: sel.children, addOns: sel.addOns });
   const today = todayIST();
-  const earliest = earliestCheckIn();
   const { unavailable } = useUnavailableRooms(sel.checkIn, sel.checkOut);
   const isBooked = unavailable.includes(room.slug);
   const bookedRanges = useBookedRanges(room.slug);
@@ -106,7 +105,7 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
             <input
               className="field"
               type="date"
-              min={earliest}
+              min={today}
               value={sel.checkIn}
               onChange={(e) => {
                 const v = e.target.value;

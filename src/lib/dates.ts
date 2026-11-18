@@ -6,11 +6,6 @@ export function todayIST(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: IST, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
 }
 
-/** The earliest check-in we accept: tomorrow. Same-day bookings are not taken. */
-export function earliestCheckIn(): string {
-  return addDays(todayIST(), 1);
-}
-
 /** Parse YYYY-MM-DD as a UTC-midnight date so day arithmetic never drifts. */
 export function parseISO(iso: string | null | undefined): Date | null {
   if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;

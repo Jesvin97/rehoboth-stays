@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { d1Configured } from "@/lib/d1";
 import { getBookedRanges, getUnavailableRooms } from "@/lib/bookings";
-import { earliestCheckIn, nightsBetween, parseISO, todayIST } from "@/lib/dates";
+import { nightsBetween, parseISO, todayIST } from "@/lib/dates";
 import { getRoom, rooms } from "@/lib/rooms";
 
 /**
@@ -22,7 +22,7 @@ export async function GET(req: Request) {
     const room = url.searchParams.get("room");
     if (room) {
       if (!getRoom(room)) return NextResponse.json({ error: "Unknown room." }, { status: 400, headers: NO_STORE });
-      return NextResponse.json({ booked: await getBookedRanges(room, earliestCheckIn()) }, { headers: NO_STORE });
+      return NextResponse.json({ booked: await getBookedRanges(room, todayIST()) }, { headers: NO_STORE });
     }
 
     const checkIn = url.searchParams.get("in") ?? "";

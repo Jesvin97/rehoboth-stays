@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { addDays, earliestCheckIn, formatShort, nightsBetween } from "@/lib/dates";
+import { addDays, formatShort, nightsBetween, todayIST } from "@/lib/dates";
 import { stayQuery, type Stay } from "@/lib/booking-params";
 import { Stepper } from "../ui/Stepper";
 
@@ -12,7 +12,7 @@ export function StaySearch({ initial }: { initial: Stay }) {
   const [s, setS] = useState(initial);
   const [editingGuests, setEditingGuests] = useState(false);
   const n = nightsBetween(s.checkIn, s.checkOut);
-  const earliest = earliestCheckIn();
+  const today = todayIST();
 
   const apply = (next: Stay) => {
     setS(next);
@@ -27,7 +27,7 @@ export function StaySearch({ initial }: { initial: Stay }) {
           <input
             className="field"
             type="date"
-            min={earliest}
+            min={today}
             value={s.checkIn}
             onChange={(e) => {
               const v = e.target.value;

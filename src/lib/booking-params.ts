@@ -1,4 +1,4 @@
-import { addDays, defaultStay, earliestCheckIn, nightsBetween, parseISO } from "./dates";
+import { addDays, defaultStay, nightsBetween, parseISO, todayIST } from "./dates";
 import { addOns } from "./pricing";
 import type { PlanId } from "./rooms";
 
@@ -28,7 +28,7 @@ export function parseStay(sp: SearchParams): Stay {
   const d = defaultStay();
   let checkIn = one(sp.in) ?? d.checkIn;
   let checkOut = one(sp.out) ?? d.checkOut;
-  if (!parseISO(checkIn) || checkIn < earliestCheckIn()) checkIn = d.checkIn;
+  if (!parseISO(checkIn) || checkIn < todayIST()) checkIn = d.checkIn;
   if (!parseISO(checkOut) || nightsBetween(checkIn, checkOut) < 1) checkOut = addDays(checkIn, 2);
   return {
     checkIn,
