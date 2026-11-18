@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { heroSlides } from "@/lib/content";
 import { site } from "@/lib/site";
-import { addDays, defaultStay, nightsBetween, todayIST } from "@/lib/dates";
+import { addDays, defaultStay, earliestCheckIn, nightsBetween } from "@/lib/dates";
 import { ChevronDown, ChevronLeft, ChevronRight } from "../ui/Icons";
 import { Stepper } from "../ui/Stepper";
 
@@ -23,7 +23,7 @@ export function Hero() {
   const [guestsOpen, setGuestsOpen] = useState(false);
   const [error, setError] = useState("");
   const guestsRef = useRef<HTMLDivElement>(null);
-  const today = checkIn ? todayIST() : undefined;
+  const earliest = checkIn ? earliestCheckIn() : undefined;
 
   useEffect(() => {
     if (paused) return;
@@ -128,7 +128,7 @@ export function Hero() {
               <input
                 className="min-h-9 bg-transparent font-display text-[22px] font-medium normal-case tracking-normal text-ink outline-none"
                 type="date"
-                min={today}
+                min={earliest}
                 value={checkIn}
                 onChange={(e) => {
                   const v = e.target.value;

@@ -19,7 +19,7 @@ export default async function RoomsPage({ searchParams }: { searchParams: Promis
             <h1 className="h2">Rooms &amp; cottages</h1>
           </div>
           <StaySearch initial={stay} />
-          <RoomsSection query={stayQuery(stay)} />
+          <RoomsSection query={stayQuery(stay)} checkIn={stay.checkIn} checkOut={stay.checkOut} />
         </div>
       </section>
     </SiteShell>

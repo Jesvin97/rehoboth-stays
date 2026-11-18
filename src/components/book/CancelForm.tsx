@@ -69,7 +69,7 @@ export function CancelForm({ initialRef }: { initialRef: string }) {
         <h2 className="font-display text-2xl font-medium">{result.alreadyCancelled ? "This booking is already cancelled" : "Your booking is cancelled"}</h2>
         {result.refund > 0 ? (
           <>
-            <p className="text-ink-soft">Refund: <strong>{inr(result.refund)}</strong> ({result.percent}% of what you paid).</p>
+            <p className="text-ink-soft">Refund: <strong>{inr(result.refund)}</strong> ({result.percent}% of what you paid; {100 - result.percent}% is kept as a cancellation charge).</p>
             <p className="text-ink-soft">
               {result.refundStatus === "processed"
                 ? "The refund has been sent to your original payment method. Banks usually show it within 5 to 7 working days."
@@ -79,7 +79,7 @@ export function CancelForm({ initialRef }: { initialRef: string }) {
             </p>
           </>
         ) : (
-          <p className="text-ink-soft">No refund applies to a cancellation this close to check-in.</p>
+          <p className="text-ink-soft">No refund applies to a cancellation this close to check-in. The dates are open for other guests again.</p>
         )}
         <Link href="/" className="font-semibold">Back to home</Link>
       </div>
@@ -118,8 +118,14 @@ export function CancelForm({ initialRef }: { initialRef: string }) {
           ) : (
             <>
               <p className="text-ink-soft">
-                You are cancelling <strong>{preview.daysBefore} {preview.daysBefore === 1 ? "day" : "days"}</strong> before check-in. Refund today:{" "}
-                <strong>{inr(preview.refund)}</strong> ({preview.percent}% of {inr(preview.total)}).
+                You are cancelling <strong>{preview.daysBefore} {preview.daysBefore === 1 ? "day" : "days"}</strong> before check-in.{" "}
+                {preview.refund > 0 ? (
+                  <>
+                    Refund today: <strong>{inr(preview.refund)}</strong> ({preview.percent}% of {inr(preview.total)}). {100 - preview.percent}% is kept as a cancellation charge.
+                  </>
+                ) : (
+                  <>This is too close to check-in for a refund, so the full amount is kept as a cancellation charge. Cancelling still frees the dates for other guests.</>
+                )}
               </p>
               <RefundTimeline checkIn={preview.checkIn} today={new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" })} />
               <label className="flex cursor-pointer items-start gap-2.5 text-sm text-ink-soft">

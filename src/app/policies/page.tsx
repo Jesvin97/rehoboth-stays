@@ -21,21 +21,21 @@ export default function PoliciesPage() {
           <p className="text-ink-soft">
             The full amount is paid online at the time of booking through Cashfree. Nothing is due at check-in.
           </p>
-          <p className="text-ink-soft">The refund depends on how many days before your check-in date you cancel. It is a percentage of the total you paid, GST included.</p>
+          <p className="text-ink-soft">The dates you book are held for you and shown as booked to everyone else, so a cancellation costs the homestay income. The earlier you cancel, the less is kept as a cancellation charge. Percentages are of the total you paid, GST included.</p>
           <div className="overflow-x-auto rounded-xl border border-line">
             <table className="w-full min-w-[420px] text-left">
               <thead className="bg-mist text-sm">
-                <tr><th className="p-3">If you cancel…</th><th className="p-3">Refund</th></tr>
+                <tr><th className="p-3">If you cancel…</th><th className="p-3">Refund</th><th className="p-3">Kept as cancellation charge</th></tr>
               </thead>
               <tbody className="text-ink-soft">
                 {refundTiers.map((t, i) => {
                   const prev = i > 0 ? refundTiers[i - 1].minDaysBefore : null;
                   const label = prev === null ? `${t.minDaysBefore} or more days before check-in` : t.minDaysBefore === 0 ? `Up to ${prev - 1} days before check-in, including the check-in day` : `${t.minDaysBefore} to ${prev - 1} days before check-in`;
                   return (
-                    <tr key={t.minDaysBefore} className="border-t border-line"><td className="p-3">{label}</td><td className="p-3 font-semibold text-ink">{t.percent}%</td></tr>
+                    <tr key={t.minDaysBefore} className="border-t border-line"><td className="p-3">{label}</td><td className="p-3 font-semibold text-ink">{t.percent > 0 ? `${t.percent}%` : "No refund"}</td><td className="p-3">{100 - t.percent}%</td></tr>
                   );
                 })}
-                <tr className="border-t border-line"><td className="p-3">After your stay has started</td><td className="p-3 font-semibold text-ink">Please call us</td></tr>
+                <tr className="border-t border-line"><td className="p-3">After your stay has started</td><td className="p-3 font-semibold text-ink">Please call us</td><td className="p-3">-</td></tr>
               </tbody>
             </table>
           </div>

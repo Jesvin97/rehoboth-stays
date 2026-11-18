@@ -1,5 +1,5 @@
 import { formatShort } from "@/lib/dates";
-import { refundSchedule } from "@/lib/cancellation";
+import { keptPercent, refundSchedule } from "@/lib/cancellation";
 
 /** The refund timeline for a stay, in days before check-in, with real dates. */
 export function RefundTimeline({ checkIn, today }: { checkIn: string; today: string }) {
@@ -9,10 +9,11 @@ export function RefundTimeline({ checkIn, today }: { checkIn: string; today: str
     <div className="grid grid-cols-1 gap-y-2" style={{ gridTemplateColumns: `repeat(${Math.min(rows.length, 4)}, minmax(0, 1fr))` }}>
       {rows.map((r) => (
         <div key={r.until} className={`border-t-[5px] py-3 pr-3 ${tone(r.percent)}`}>
-          <div className="font-semibold">{r.percent}% refund</div>
+          <div className="font-semibold">{r.percent > 0 ? `${r.percent}% refund` : "No refund"}</div>
           <div className="text-sm text-muted">
             {r.from ? `${formatShort(r.from)} to ${formatShort(r.until)}` : `Until ${formatShort(r.until)}`}
           </div>
+          <div className="text-sm text-muted">{r.percent > 0 ? `${keptPercent(r.percent)}% is kept` : "Full amount is kept"}</div>
         </div>
       ))}
     </div>

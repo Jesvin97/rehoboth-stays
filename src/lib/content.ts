@@ -1,4 +1,4 @@
-import { refundTiers } from "./cancellation";
+import { describeTiers } from "./cancellation";
 /** Homepage and shared content. Bracketed text is placeholder copy. */
 
 /** `src` is a file in /public/photos; without it the slide shows a labelled placeholder. */
@@ -76,9 +76,7 @@ export const faqs = [
   { q: "Can we bring children or pets?", a: "[Child policy, extra bed charges, and pet rules.]" },
   {
     q: "What is the cancellation policy?",
-    a: `You can cancel online until your check-in day. The refund depends on how many days before check-in you cancel: ${refundTiers
-      .map((t, i, all) => `${t.percent}% ${i === 0 ? `for ${t.minDaysBefore} or more days` : t.minDaysBefore === 0 ? `for 0 to ${all[i - 1].minDaysBefore - 1} days` : `for ${t.minDaysBefore} to ${all[i - 1].minDaysBefore - 1} days`}`)
-      .join(", ")}. Refunds go back through Cashfree to the original payment method in 5 to 7 working days.`,
+    a: `You can cancel online until your check-in day. The refund depends on how many days before check-in you cancel. ${describeTiers()}. Refunds go back through Cashfree to the original payment method in 5 to 7 working days.`,
   },
   { q: "How do I pay?", a: "The full amount is paid online when you book, through Cashfree, UPI, cards, net banking or wallets. Nothing is due at check-in." },
 ];

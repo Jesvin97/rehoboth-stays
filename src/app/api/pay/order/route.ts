@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { quote } from "@/lib/pricing";
 import { getRoom } from "@/lib/rooms";
-import { todayIST } from "@/lib/dates";
+import { earliestCheckIn } from "@/lib/dates";
 import { bookingRef, isCheckoutRequest } from "@/lib/booking-schema";
 import { cashfreeConfigured, cashfreeEnv, createOrder } from "@/lib/cashfree-server";
 import { d1Configured } from "@/lib/d1";
@@ -18,8 +18,8 @@ export async function POST(req: Request) {
   if (!isCheckoutRequest(body)) {
     return NextResponse.json({ error: "Please check your details and try again." }, { status: 400 });
   }
-  if (body.checkIn < todayIST()) {
-    return NextResponse.json({ error: "Check-in can't be in the past." }, { status: 400 });
+  if (body.checkIn < earliestCheckIn()) {
+    return NextResponse.json({ error: "Bookings start from tomorrow. Please choose a later check-in date." }, { status: 400 });
   }
 
   const q = quote({

@@ -142,3 +142,38 @@ export async function claimCancellation(
 export async function setRefundStatus(ref: string, status: "pending" | "processing" | "processed" | "failed") {
   await d1("UPDATE bookings SET refund_status = ? WHERE ref = ? AND status = 'cancelled'", [status, ref]);
 }
+
+/** A booking blocks dates while it is paid, or while an unpaid hold is still running. */
+const ACTIVE = "(status = 'paid' OR (status = 'pending' AND hold_expires_at > ?))";
+
+/**
+ * Which rooms are NOT available for these dates. The whole home clashes with every room, and every
+ * room clashes with the whole home. Cancelled bookings no longer count, so their dates open up again at once.
+ */
+export async function getUnavailableRooms(checkIn: string, checkOut: string, allRooms: string[]): Promise<string[]> {
+  const r = await d1<{ room: string }>(
+    `SELECT DISTINCT room FROM bookings WHERE check_in < ? AND check_out > ? AND ${ACTIVE}`,
+    [checkOut, checkIn, Date.now()],
+  );
+  const booked = new Set(r.results.map((x) => x.room));
+  if (booked.size === 0) return [];
+  if (booked.has("whole-home")) return allRooms; // the whole house is taken: nothing else is free
+  return allRooms.filter((room) => booked.has(room) || (room === "whole-home" && booked.size > 0));
+}
+
+/** Date ranges already taken for a room (no guest details), for showing "booked" dates. */
+export async function getBookedRanges(room: string, fromDate: string): Promise<{ from: string; to: string }[]> {
+  const r = await d1<{ check_in: string; check_out: string }>(
+    `SELECT check_in, check_out FROM bookings WHERE check_out > ? AND ${ACTIVE}
+       AND (? = 'whole-home' OR room = ? OR room = 'whole-home') ORDER BY check_in`,
+    [fromDate, Date.now(), room, room],
+  );
+  // Merge back-to-back or overlapping ranges into one.
+  const out: { from: string; to: string }[] = [];
+  for (const b of r.results) {
+    const last = out[out.length - 1];
+    if (last && b.check_in <= last.to) last.to = b.check_out > last.to ? b.check_out : last.to;
+    else out.push({ from: b.check_in, to: b.check_out });
+  }
+  return out;
+}

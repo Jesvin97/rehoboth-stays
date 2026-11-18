@@ -11,18 +11,21 @@ import { Heart } from "../ui/Icons";
 export function RoomCard({
   room,
   query,
+  booked = false,
   saved,
   onToggleSave,
 }: {
   room: Room;
   query?: string;
+  /** True when the room is already booked for the dates being searched. */
+  booked?: boolean;
   saved: boolean;
   onToggleSave: () => void;
 }) {
   const href = `/rooms/${room.slug}${query ? `?${query}` : ""}`;
   const maxGuests = room.maxAdults + room.maxChildren;
   return (
-    <article className="group lift animate-fade-up flex flex-col overflow-hidden bg-white shadow-[0_1px_0_var(--color-line)]">
+    <article className={`group lift animate-fade-up flex flex-col overflow-hidden bg-white shadow-[0_1px_0_var(--color-line)] ${booked ? "opacity-80" : ""}`}>
       <div className="relative">
         <Link href={href} tabIndex={-1} aria-hidden="true">
           <Photo label={room.photos[0].label} src={room.photos[0].src} tone={room.photos[0].tone} className="aspect-[3/2]" zoom />
@@ -30,6 +33,7 @@ export function RoomCard({
         <span className="absolute left-0 top-4 bg-white/95 px-3 py-1.5 text-[13px] font-medium text-ink">
           {site.region.split(",")[0]}
         </span>
+        {booked ? <span className="absolute bottom-0 left-0 bg-rust px-3 py-1.5 text-[13px] font-semibold text-white" role="status">Booked for your dates</span> : null}
         <button
           type="button"
           onClick={onToggleSave}
@@ -62,7 +66,7 @@ export function RoomCard({
             <strong className="font-display text-[26px] font-semibold leading-none">{inr(room.rates.bb)}</strong>
             <span className="text-[13px] text-muted"> / night</span>
           </span>
-          <Link href={href} className="btn-outline min-h-11 whitespace-nowrap px-5">View details</Link>
+          <Link href={href} className="btn-outline min-h-11 whitespace-nowrap px-5">{booked ? "See other dates" : "View details"}</Link>
         </div>
       </div>
     </article>

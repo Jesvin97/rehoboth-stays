@@ -6,7 +6,7 @@ import { Photo } from "@/components/ui/Photo";
 import { getRoom, plans } from "@/lib/rooms";
 import { inr } from "@/lib/pricing";
 import { formatShort } from "@/lib/dates";
-import { refundPercent } from "@/lib/cancellation";
+import { refundLabel, refundPercent } from "@/lib/cancellation";
 import { todayIST } from "@/lib/dates";
 import { site } from "@/lib/site";
 import type { SearchParams } from "@/lib/booking-params";
@@ -73,7 +73,7 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
               <div><dt className="text-[13px] text-muted">Paid in full</dt><dd className="font-semibold">{inr(total)}</dd><dd className="break-all text-[13px] text-muted">{saved?.provider_payment_id ?? one(sp.pay)}</dd></div>
             </dl>
             <p className="border-t border-line-soft pt-3 text-sm text-muted">
-              Need to cancel? If you cancel today you get {refundPercent(checkIn, todayIST())}% back; the earlier you cancel, the more you get back.{" "}
+              Need to cancel? If you cancel today: {refundLabel(refundPercent(checkIn, todayIST()))}. The earlier you cancel, the more you get back.{" "}
               <Link href={`/book/cancel?ref=${ref}`} className="font-semibold">Cancel or see refund details</Link>.
             </p>
           </div>
