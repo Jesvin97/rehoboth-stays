@@ -1,8 +1,9 @@
 import "server-only";
 import { getOrder, getPaidPaymentId } from "./cashfree-server";
 import { getBooking, logPaymentEvent, markPaid } from "./bookings";
+import { refundDatesLost } from "./cancellations";
 
-export type PaymentResult = "paid" | "pending" | "failed" | "not_found" | "needs_review";
+export type PaymentResult = "paid" | "pending" | "failed" | "not_found" | "needs_review" | "refunded";
 
 /**
  * Asks Cashfree whether this booking's order is paid, and if so confirms the booking.
@@ -13,7 +14,10 @@ export async function confirmPayment(ref: string): Promise<PaymentResult> {
   const booking = await getBooking(ref);
   if (!booking) return "not_found";
   if (booking.status === "paid") return "paid";
-  if (booking.status === "cancelled" || !booking.provider_order_id) return "failed";
+  // The guest paid but the dates were taken meanwhile: they are refunded in full, automatically.
+  if (booking.status === "cancelled") return booking.cancel_reason === "dates_unavailable" ? "refunded" : "failed";
+  if (booking.status === "needs_review") return (await refundDatesLost(ref)) === "refunded" ? "refunded" : "needs_review";
+  if (!booking.provider_order_id) return "failed";
 
   const order = await getOrder(ref);
   if (String(order.cf_order_id) !== booking.provider_order_id) return "failed";
@@ -37,5 +41,7 @@ export async function confirmPayment(ref: string): Promise<PaymentResult> {
     amountPaise: booking.total * 100,
     raw: JSON.stringify({ order_id: ref, cf_order_id: order.cf_order_id, payment_id: paymentId, amount: order.order_amount, result }),
   }).catch(() => {});
-  return result === "paid" ? "paid" : result === "needs_review" ? "needs_review" : "failed";
+  if (result === "paid") return "paid";
+  if (result === "needs_review") return (await refundDatesLost(ref).catch(() => "failed" as const)) === "refunded" ? "refunded" : "needs_review";
+  return "failed";
 }

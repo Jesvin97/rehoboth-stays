@@ -1,27 +1,58 @@
 import { addDays, nightsBetween } from "./dates";
 
 /**
- * Refunds are counted from the day the booking is made (not the check-in date).
- * Booked on the 6th → 50% until the 8th, 25% on the 9th and 10th, nothing from the 11th.
+ * Refund policy, counted in days BEFORE the check-in date (India time).
+ * This list is the single source of truth: the checkout, the confirmation page,
+ * the policies page and the cancellation itself all read it. To change the policy, edit it here.
+ * Keep it ordered from the most days to the fewest, and end with minDaysBefore: 0.
  */
-export const cancellationTiers = [
-  { percent: 50, fromDay: 0, toDay: 2 },
-  { percent: 25, fromDay: 3, toDay: 4 },
-  { percent: 0, fromDay: 5, toDay: Infinity },
+export const refundTiers = [
+  { minDaysBefore: 15, percent: 100 },
+  { minDaysBefore: 7, percent: 75 },
+  { minDaysBefore: 3, percent: 50 },
+  { minDaysBefore: 0, percent: 25 },
 ] as const;
 
-export function cancellationSchedule(bookedOn: string) {
-  return {
-    fiftyUntil: addDays(bookedOn, 2),
-    quarterFrom: addDays(bookedOn, 3),
-    quarterUntil: addDays(bookedOn, 4),
-    noRefundFrom: addDays(bookedOn, 5),
-  };
+/** Whole days from `today` to check-in. 0 on the check-in day, negative once the stay has started. */
+export function daysBeforeCheckIn(checkIn: string, today: string): number {
+  return nightsBetween(today, checkIn);
 }
 
-/** Refund percentage if a booking made on `bookedOn` is cancelled on `cancelledOn`. */
-export function refundPercent(bookedOn: string, cancelledOn: string): number {
-  const day = nightsBetween(bookedOn, cancelledOn);
-  if (day < 0) return 0;
-  return cancellationTiers.find((t) => day >= t.fromDay && day <= t.toDay)?.percent ?? 0;
+/** Guests can cancel online until the check-in day. After that, they should contact the host. */
+export function canCancelOnline(checkIn: string, today: string): boolean {
+  return daysBeforeCheckIn(checkIn, today) >= 0;
+}
+
+/** Refund percentage if a booking for `checkIn` is cancelled on `cancelledOn`. */
+export function refundPercent(checkIn: string, cancelledOn: string): number {
+  const d = daysBeforeCheckIn(checkIn, cancelledOn);
+  if (d < 0) return 0;
+  return refundTiers.find((t) => d >= t.minDaysBefore)?.percent ?? 0;
+}
+
+/** The refund in whole rupees (rounded down) for the amount the guest paid, GST included. */
+export function refundAmount(total: number, percent: number): number {
+  return Math.floor((total * percent) / 100);
+}
+
+export type RefundRow = {
+  percent: number;
+  /** First day this refund applies (null = any earlier day). */
+  from: string | null;
+  /** Last day this refund applies. */
+  until: string;
+};
+
+/** The refund timeline for a stay starting on `checkIn`, as of `today`. Past tiers are left out. */
+export function refundSchedule(checkIn: string, today: string): RefundRow[] {
+  const rows: RefundRow[] = [];
+  let prevUntil: string | null = null;
+  for (const t of refundTiers) {
+    const until = addDays(checkIn, -t.minDaysBefore);
+    const from = prevUntil ? addDays(prevUntil, 1) : null;
+    prevUntil = until;
+    if (until < today) continue; // that window has already passed
+    rows.push({ percent: t.percent, from: from && from < today ? today : from, until });
+  }
+  return rows;
 }

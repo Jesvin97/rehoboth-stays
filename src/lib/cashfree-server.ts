@@ -86,6 +86,20 @@ export async function getPaidPaymentId(orderId: string): Promise<string | null> 
   return ok ? String(ok.cf_payment_id) : null;
 }
 
+export type CashfreeRefund = { refund_id?: string; cf_refund_id?: number | string; refund_status?: string; refund_amount?: number };
+
+/** Starts a refund to the guest's original payment method. `refundId` must be unique per refund; reusing it is safe. */
+export function createRefund(p: { orderId: string; refundId: string; amountRupees: number; note: string }) {
+  return cf<CashfreeRefund>(`/orders/${encodeURIComponent(p.orderId)}/refunds`, {
+    method: "POST",
+    body: { refund_amount: p.amountRupees, refund_id: p.refundId, refund_note: p.note.slice(0, 100), refund_speed: "STANDARD" },
+  });
+}
+
+export function getRefund(orderId: string, refundId: string) {
+  return cf<CashfreeRefund>(`/orders/${encodeURIComponent(orderId)}/refunds/${encodeURIComponent(refundId)}`);
+}
+
 /** Cashfree signs `timestamp + rawBody` with your secret key (HMAC-SHA256, base64). */
 export function verifyWebhookSignature(rawBody: string, signature: string, timestamp: string) {
   const secret = process.env.CASHFREE_SECRET_KEY;

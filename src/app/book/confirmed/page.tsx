@@ -5,8 +5,9 @@ import { CheckoutHeader } from "@/components/book/CheckoutHeader";
 import { Photo } from "@/components/ui/Photo";
 import { getRoom, plans } from "@/lib/rooms";
 import { inr } from "@/lib/pricing";
-import { formatShort, parseISO } from "@/lib/dates";
-import { cancellationSchedule } from "@/lib/cancellation";
+import { formatShort } from "@/lib/dates";
+import { refundPercent } from "@/lib/cancellation";
+import { todayIST } from "@/lib/dates";
 import { site } from "@/lib/site";
 import type { SearchParams } from "@/lib/booking-params";
 import { cashfreeConfigured } from "@/lib/cashfree-server";
@@ -40,9 +41,6 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
   const children = saved?.children ?? (Number(one(sp.children)) || 0);
   const total = saved?.total ?? (Number(one(sp.total)) || 0);
   const plan = plans.find((p) => p.id === (saved?.plan ?? one(sp.plan))) ?? plans[0];
-  const savedDay = saved ? new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date(saved.created_at)) : "";
-  const booked = savedDay || (parseISO(one(sp.booked)) ? one(sp.booked) : checkIn);
-  const policy = cancellationSchedule(booked);
   const guests = `${adults} ${adults === 1 ? "adult" : "adults"}${children ? `, ${children} ${children === 1 ? "child" : "children"}` : ""}`;
   const firstName = (saved?.guest_name ?? one(sp.name)).trim().split(" ")[0] || "friend";
   const phone = saved?.phone ?? one(sp.phone);
@@ -75,7 +73,8 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
               <div><dt className="text-[13px] text-muted">Paid in full</dt><dd className="font-semibold">{inr(total)}</dd><dd className="break-all text-[13px] text-muted">{saved?.provider_payment_id ?? one(sp.pay)}</dd></div>
             </dl>
             <p className="border-t border-line-soft pt-3 text-sm text-muted">
-              Need to cancel? 50% refund until {formatShort(policy.fiftyUntil)}, 25% until {formatShort(policy.quarterUntil)}, no refund from {formatShort(policy.noRefundFrom)}.
+              Need to cancel? If you cancel today you get {refundPercent(checkIn, todayIST())}% back; the earlier you cancel, the more you get back.{" "}
+              <Link href={`/book/cancel?ref=${ref}`} className="font-semibold">Cancel or see refund details</Link>.
             </p>
           </div>
 

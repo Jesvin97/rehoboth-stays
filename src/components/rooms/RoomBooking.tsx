@@ -6,8 +6,7 @@ import { plans, type Room } from "@/lib/rooms";
 import { addOns, inr, quote } from "@/lib/pricing";
 import { addDays, nightsBetween, todayIST } from "@/lib/dates";
 import { selectionQuery, type BookingSelection } from "@/lib/booking-params";
-import { cancellationSchedule } from "@/lib/cancellation";
-import { formatShort } from "@/lib/dates";
+import { refundPercent } from "@/lib/cancellation";
 import { Stepper } from "../ui/Stepper";
 
 /**
@@ -23,7 +22,6 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
   const set = (patch: Partial<BookingSelection>) => setSel((s) => ({ ...s, ...patch }));
   const q = quote({ roomSlug: room.slug, plan: sel.plan, checkIn: sel.checkIn, checkOut: sel.checkOut, adults: sel.adults, children: sel.children, addOns: sel.addOns });
   const today = todayIST();
-  const policy = cancellationSchedule(today);
 
   return (
     <div className="flex flex-wrap items-start gap-12">
@@ -144,7 +142,7 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
         <p className="text-center text-[13px] text-muted">
           Full payment at booking, secured by Cashfree
           <br />
-          Book today: 50% refund until {formatShort(policy.fiftyUntil)}
+          Cancel today: {refundPercent(sel.checkIn, today)}% refund. More days before check-in, bigger refund.
         </p>
       </aside>
     </div>

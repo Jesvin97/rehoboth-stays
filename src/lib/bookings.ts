@@ -4,8 +4,11 @@ import type { CheckoutRequest } from "./booking-schema";
 import { decryptPII, encryptPII } from "./pii";
 import { PRIVACY_VERSION } from "./site";
 
-/** How long an unpaid booking holds its dates while the guest pays. */
-const HOLD_MS = 20 * 60 * 1000;
+/**
+ * How long an unpaid booking holds its dates while the guest pays. The Cashfree order expires
+ * earlier (16 minutes), so a payment can never complete after the hold has ended.
+ */
+const HOLD_MS = 25 * 60 * 1000;
 
 export type BookingRow = {
   ref: string;
@@ -22,6 +25,12 @@ export type BookingRow = {
   created_at: number;
   provider_order_id: string | null;
   provider_payment_id: string | null;
+  cancelled_at: number | null;
+  cancel_reason: string | null;
+  refund_percent: number | null;
+  refund_amount: number | null;
+  refund_id: string | null;
+  refund_status: string | null;
 };
 
 /**
@@ -109,4 +118,27 @@ export async function logPaymentEvent(e: { ref: string | null; event: string; or
     `INSERT OR IGNORE INTO payment_events (booking_ref, event, order_id, payment_id, amount_paise, raw, created_at) VALUES (?,?,?,?,?,?,?)`,
     [e.ref, e.event, e.orderId, e.paymentId, e.amountPaise, e.raw.slice(0, 20000), Date.now()],
   );
+}
+
+/**
+ * Cancels a booking and records the refund, in ONE atomic step, so a booking can only ever be
+ * cancelled (and refunded) once, even if two requests arrive together. Cancelled bookings free their dates.
+ * `from` is the status the booking must currently have: "paid" for a guest cancellation,
+ * "needs_review" when the dates were lost while the guest was paying.
+ * Returns false if the booking was no longer in that status.
+ */
+export async function claimCancellation(
+  ref: string,
+  p: { from: "paid" | "needs_review"; reason: "guest" | "dates_unavailable"; percent: number; amount: number; refundId: string },
+): Promise<boolean> {
+  const r = await d1(
+    `UPDATE bookings SET status = 'cancelled', cancelled_at = ?, cancel_reason = ?, refund_percent = ?, refund_amount = ?, refund_id = ?, refund_status = ?
+     WHERE ref = ? AND status = ?`,
+    [Date.now(), p.reason, p.percent, p.amount, p.refundId, p.amount > 0 ? "pending" : "none", ref, p.from],
+  );
+  return r.meta.changes > 0;
+}
+
+export async function setRefundStatus(ref: string, status: "pending" | "processing" | "processed" | "failed") {
+  await d1("UPDATE bookings SET refund_status = ? WHERE ref = ? AND status = 'cancelled'", [status, ref]);
 }

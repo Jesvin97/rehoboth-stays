@@ -42,7 +42,8 @@ Everything in `[brackets]` is placeholder copy.
 2. `POST /api/pay/order` recalculates the price on the server, holds the dates in D1, and creates a Cashfree order for the full amount.
 3. The browser opens Cashfree's payment window. Afterwards `POST /api/pay/verify` asks Cashfree whether the order is paid; the browser is never trusted.
 4. The Cashfree webhook (`/api/pay/webhook`) and the return page (`/book/return`) confirm the same way, so a paid booking is saved even if the guest closes the tab.
-5. Create the tables with `db/schema.sql` (existing databases: `db/migrations/`).
+5. Guests cancel at `/book/cancel` (booking ID + mobile number). The refund % comes from `src/lib/cancellation.ts` (days before check-in) and is sent through Cashfree's refund API.
+6. Create the tables with `db/schema.sql` (existing databases: `db/migrations/`).
 
 ## Still needed
 

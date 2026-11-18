@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SiteShell } from "@/components/site/SiteShell";
 import { houseRules } from "@/lib/content";
+import { refundTiers } from "@/lib/cancellation";
 import { site, PRIVACY_VERSION } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -19,21 +21,29 @@ export default function PoliciesPage() {
           <p className="text-ink-soft">
             The full amount is paid online at the time of booking through Cashfree. Nothing is due at check-in.
           </p>
-          <p className="text-ink-soft">Refunds are counted from the day you book, not from your check-in date:</p>
+          <p className="text-ink-soft">The refund depends on how many days before your check-in date you cancel. It is a percentage of the total you paid, GST included.</p>
           <div className="overflow-x-auto rounded-xl border border-line">
-            <table className="w-full min-w-[480px] text-left">
+            <table className="w-full min-w-[420px] text-left">
               <thead className="bg-mist text-sm">
-                <tr><th className="p-3">If you cancel…</th><th className="p-3">Refund</th><th className="p-3">Example (booked on the 6th)</th></tr>
+                <tr><th className="p-3">If you cancel…</th><th className="p-3">Refund</th></tr>
               </thead>
               <tbody className="text-ink-soft">
-                <tr className="border-t border-line"><td className="p-3">On the booking day or within the next 2 days</td><td className="p-3 font-semibold text-ink">50%</td><td className="p-3">6th to 8th</td></tr>
-                <tr className="border-t border-line"><td className="p-3">On the 3rd or 4th day after booking</td><td className="p-3 font-semibold text-ink">25%</td><td className="p-3">9th to 10th</td></tr>
-                <tr className="border-t border-line"><td className="p-3">From the 5th day after booking</td><td className="p-3 font-semibold text-ink">No refund</td><td className="p-3">11th onwards</td></tr>
+                {refundTiers.map((t, i) => {
+                  const prev = i > 0 ? refundTiers[i - 1].minDaysBefore : null;
+                  const label = prev === null ? `${t.minDaysBefore} or more days before check-in` : t.minDaysBefore === 0 ? `Up to ${prev - 1} days before check-in, including the check-in day` : `${t.minDaysBefore} to ${prev - 1} days before check-in`;
+                  return (
+                    <tr key={t.minDaysBefore} className="border-t border-line"><td className="p-3">{label}</td><td className="p-3 font-semibold text-ink">{t.percent}%</td></tr>
+                  );
+                })}
+                <tr className="border-t border-line"><td className="p-3">After your stay has started</td><td className="p-3 font-semibold text-ink">Please call us</td></tr>
               </tbody>
             </table>
           </div>
+          <p className="text-ink-soft">
+            Cancel online any time before check-in at <Link href="/book/cancel">Cancel a booking</Link> with your booking ID and mobile number. You will see your exact refund before you confirm. If you book dates that someone else booked while you were paying, you are refunded in full automatically.
+          </p>
           <p className="text-sm text-muted">
-            Refunds go back to the original payment method through Cashfree within 5 to 7 working days. To cancel, message us on WhatsApp or call {site.phone} with your booking ID. Times are in IST.
+            Refunds go back to the original payment method through Cashfree within 5 to 7 working days. Questions? Call {site.phone} with your booking ID. Times are in IST.
           </p>
         </section>
 
