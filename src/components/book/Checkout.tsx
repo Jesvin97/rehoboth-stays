@@ -13,6 +13,7 @@ import type { BookingSelection } from "@/lib/booking-params";
 import type { CheckoutRequest } from "@/lib/booking-schema";
 import { loadCashfree, openCashfree } from "@/lib/cashfree-client";
 import { Consent } from "../ui/Consent";
+import { cleanPhone, isValidMobile } from "@/lib/phone";
 import { Stepper } from "../ui/Stepper";
 import { ChevronLeft, Lock } from "../ui/Icons";
 import { PriceSummary } from "./PriceSummary";
@@ -64,7 +65,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
   const [payError, setPayError] = useState("");
   const [mock, setMock] = useState<OrderResponse | null>(null);
 
-  const digits = phone.replace(/\D/g, "").slice(-10);
+  const digits = phone; // already cleaned to at most 10 digits as the guest types
   const plan = plans.find((p) => p.id === initial.plan)!;
   const q = useMemo(() => {
     const r = quote({ roomSlug: room.slug, plan: initial.plan, checkIn, checkOut, adults, children, addOns: initial.addOns, coupon });
@@ -79,6 +80,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
   if (!verified) missing.push("mobile verification");
   if (name.trim().length < 2) missing.push("your name");
   if (bookingFor === "other" && otherName.trim().length < 2) missing.push("the guest's name");
+  if (bookingFor === "other" && otherPhone && !isValidMobile(otherPhone)) missing.push("a valid 10-digit mobile number for the guest");
   if (!agree) missing.push("agreeing to the house rules");
   if (!consent) missing.push("consent to the privacy notice");
 
@@ -90,7 +92,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
 
   async function sendOtp() {
     setOtpError("");
-    if (!/^[6-9]\d{9}$/.test(digits)) return setOtpError("Enter a valid 10-digit mobile number.");
+    if (!isValidMobile(digits)) return setOtpError("Enter a valid 10-digit mobile number.");
     setOtpBusy(true);
     const res = await fetch("/api/otp/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone: digits }) }).catch(() => null);
     setOtpBusy(false);
@@ -315,7 +317,8 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
                 <div className="flex flex-wrap items-end gap-2.5">
                   <label className="field-label flex-[1_1_220px]">
                     Mobile number
-                    <input className="field" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="98xxx xxxxx" value={phone} onChange={(e) => { setPhone(e.target.value); setOtpError(""); }} />
+                    <input className="field" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="10-digit mobile number" aria-describedby="phone-hint" value={phone} onChange={(e) => { setPhone(cleanPhone(e.target.value)); setOtpError(""); }} />
+                    <span id="phone-hint" className="text-[13px] font-normal normal-case tracking-normal text-muted">{phone.length}/10 digits</span>
                   </label>
                   <button type="button" className="btn-primary min-h-[46px] rounded-[3px]" onClick={sendOtp} disabled={otpBusy}>
                     {otpSent ? "Resend OTP" : "Send OTP"}
@@ -359,7 +362,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
                 </label>
                 <label className="field-label">
                   Guest&apos;s mobile
-                  <input className="field" type="tel" placeholder="+91" value={otherPhone} onChange={(e) => setOtherPhone(e.target.value)} />
+                  <input className="field" type="tel" inputMode="numeric" placeholder="10-digit mobile number" value={otherPhone} onChange={(e) => setOtherPhone(cleanPhone(e.target.value))} />
                 </label>
               </div>
             ) : null}
