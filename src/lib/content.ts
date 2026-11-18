@@ -75,9 +75,9 @@ export const faqs = [
   { q: "Can we bring children or pets?", a: "[Child policy, extra bed charges, and pet rules.]" },
   {
     q: "What is the cancellation policy?",
-    a: "It is counted from the day you book: cancel within 2 days of booking for a 50% refund, before the 5th day for a 25% refund, and after that there is no refund. Refunds go back through Razorpay to the original payment method in 5 to 7 working days.",
+    a: "It is counted from the day you book: cancel within 2 days of booking for a 50% refund, before the 5th day for a 25% refund, and after that there is no refund. Refunds go back through Cashfree to the original payment method in 5 to 7 working days.",
   },
-  { q: "How do I pay?", a: "The full amount is paid online when you book, through Razorpay, UPI, cards, net banking or wallets. Nothing is due at check-in." },
+  { q: "How do I pay?", a: "The full amount is paid online when you book, through Cashfree, UPI, cards, net banking or wallets. Nothing is due at check-in." },
 ];
 
 export const houseRules = [

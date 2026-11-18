@@ -11,7 +11,7 @@ import { houseRules } from "@/lib/content";
 import { site } from "@/lib/site";
 import type { BookingSelection } from "@/lib/booking-params";
 import type { CheckoutRequest } from "@/lib/booking-schema";
-import { loadRazorpay, openRazorpay, type RazorpaySuccess } from "@/lib/razorpay-client";
+import { loadCashfree, openCashfree } from "@/lib/cashfree-client";
 import { Consent } from "../ui/Consent";
 import { Stepper } from "../ui/Stepper";
 import { ChevronLeft, Lock } from "../ui/Icons";
@@ -22,7 +22,7 @@ const REQUESTS = ["Early check-in", "Late check-out", "Celebrating something", "
 
 type OrderResponse =
   | { mode: "mock"; ref: string; orderId: string; amount: number }
-  | { mode: "live"; ref: string; orderId: string; amount: number; currency: string; keyId: string };
+  | { mode: "live"; ref: string; paymentSessionId: string; env: "sandbox" | "production"; amount: number };
 
 export function Checkout({ room, initial }: { room: Room; initial: BookingSelection }) {
   const router = useRouter();
@@ -110,7 +110,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
     setVerified(true);
   }
 
-  function confirmedUrl(ref: string, paymentId: string) {
+  function confirmedUrl(ref: string) {
     const p = new URLSearchParams({
       ref,
       room: room.slug,
@@ -122,25 +122,29 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
       total: String(q?.total ?? 0),
       name: name.trim().split(" ")[0],
       phone: digits,
-      pay: paymentId,
       booked: today,
     });
     return `/book/confirmed?${p.toString()}`;
   }
 
-  async function verifyAndFinish(order: OrderResponse, r: RazorpaySuccess) {
-    const res = await fetch("/api/razorpay/verify", {
+  /** Asks the server to confirm the payment with Cashfree. */
+  async function confirmWithServer(order: OrderResponse): Promise<boolean> {
+    const res = await fetch("/api/pay/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ref: order.ref, ...r }),
+      body: JSON.stringify(order.mode === "mock" ? { ref: order.ref, mockOrderId: order.orderId } : { ref: order.ref }),
     }).catch(() => null);
     const data = await res?.json().catch(() => null);
-    if (!res?.ok || !data?.ok) {
+    return Boolean(res?.ok && data?.ok);
+  }
+
+  async function verifyAndFinish(order: OrderResponse) {
+    if (!(await confirmWithServer(order))) {
       setPaying(false);
-      setPayError(`We couldn't verify the payment. If money was deducted, contact us on ${site.phone} with reference ${order.ref}.`);
+      setPayError(`We couldn't confirm the payment yet. If money was deducted, don't pay again: contact us on ${site.phone} with reference ${order.ref}.`);
       return;
     }
-    router.push(confirmedUrl(order.ref, r.razorpay_payment_id));
+    router.push(confirmedUrl(order.ref));
   }
 
   async function pay() {
@@ -173,7 +177,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
         message: message.trim(),
       },
     };
-    const res = await fetch("/api/razorpay/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).catch(() => null);
+    const res = await fetch("/api/pay/order", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).catch(() => null);
     const order = (await res?.json().catch(() => null)) as (OrderResponse & { error?: string }) | null;
     if (!res?.ok || !order || order.error) {
       setPaying(false);
@@ -186,33 +190,21 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
       return;
     }
 
-    const loaded = await loadRazorpay();
+    const loaded = await loadCashfree();
     if (!loaded) {
       setPaying(false);
-      setPayError("Razorpay didn't load. Check your connection and try again.");
+      setPayError("The payment window didn't load. Check your connection and try again.");
       return;
     }
-    openRazorpay(
-      {
-        key: order.keyId,
-        amount: Math.round(order.amount * 100),
-        currency: order.currency,
-        name: site.name,
-        description: `${room.name}, ${q?.nights} nights`,
-        order_id: order.orderId,
-        prefill: { name: name.trim(), email: email.trim() || undefined, contact: `+91${digits}` },
-        notes: { booking_ref: order.ref },
-        theme: { color: "#1f6b66" },
-      },
-      {
-        onSuccess: (r) => verifyAndFinish(order, r),
-        onFailure: () => {
-          setPaying(false);
-          setPayError("Payment didn't go through and no money was taken. Your dates are still available, try again.");
-        },
-        onDismiss: () => setPaying(false),
-      },
-    );
+    const result = await openCashfree(order.paymentSessionId, order.env).catch(() => undefined);
+    if (result?.error) {
+      // Window closed or payment failed. Check once in case the payment actually went through.
+      if (await confirmWithServer(order)) return router.push(confirmedUrl(order.ref));
+      setPaying(false);
+      setPayError("Payment didn't go through and no money was taken. Your dates are held for a few minutes, try again.");
+      return;
+    }
+    await verifyAndFinish(order);
   }
 
   const chip = (on: boolean) =>
@@ -421,8 +413,8 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
             <div className="flex items-start gap-3.5 border-t border-line-soft pt-4">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-tint text-accent"><Lock size={22} /></span>
               <div className="flex flex-col gap-1">
-                <strong>Secure payment via Razorpay</strong>
-                <span className="text-[15px] text-ink-soft">When you continue, Razorpay&apos;s checkout opens over this page. Choose how you pay inside it.</span>
+                <strong>Secure payment via Cashfree</strong>
+                <span className="text-[15px] text-ink-soft">When you continue, Cashfree&apos;s checkout opens over this page. Choose how you pay inside it.</span>
               </div>
             </div>
             <ul className="flex flex-wrap gap-2">
@@ -430,7 +422,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
                 <li key={m} className="rounded-full border border-line-mid px-3.5 py-1.5 text-sm">{m}</li>
               ))}
             </ul>
-            <span className="text-[13px] text-muted">Card and bank details are entered on Razorpay, never on our site.</span>
+            <span className="text-[13px] text-muted">Card and bank details are entered on Cashfree, never on our site.</span>
           </section>
 
           {/* Cancellation */}
@@ -451,7 +443,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
                 <div className="text-sm text-muted">From {formatShort(policy.noRefundFrom)}</div>
               </div>
             </div>
-            <p className="text-sm text-muted">Refunds go back through Razorpay to the original payment method in 5 to 7 working days. Times in IST.</p>
+            <p className="text-sm text-muted">Refunds go back through Cashfree to the original payment method in 5 to 7 working days. Times in IST.</p>
           </section>
 
           {/* Rules + confirm */}
@@ -464,13 +456,13 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
               <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-accent" />
               <span>I agree to the house rules, the <Link href="/policies">cancellation policy</Link> and the terms of stay.</span>
             </label>
-            <Consent id="checkout-consent" checked={consent} onChange={setConsent} purpose="my name, phone, email and any GST details to manage this booking, and share them with Razorpay to take payment" />
+            <Consent id="checkout-consent" checked={consent} onChange={setConsent} purpose="my name, phone, email and any GST details to manage this booking, and share them with Cashfree to take payment" />
             {tried && missing.length ? (
               <div role="alert" className="animate-fade-up rounded-[3px] bg-error-bg px-3.5 py-3 text-sm text-error-ink">Almost there, still needed: {missing.join(", ")}.</div>
             ) : null}
             {payError ? <div role="alert" className="animate-fade-up rounded-[3px] bg-error-bg px-3.5 py-3 text-sm text-error-ink">{payError}</div> : null}
             <button type="button" onClick={pay} disabled={paying} className="btn-primary min-h-14 rounded-xl text-[17px]">
-              {paying ? "Opening Razorpay…" : `Pay ${q ? inr(q.total) : ""} securely with Razorpay`}
+              {paying ? "Opening Cashfree…" : `Pay ${q ? inr(q.total) : ""} securely with Cashfree`}
             </button>
           </section>
         </div>
@@ -484,7 +476,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
       <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-line bg-white px-4 py-3 shadow-bar lg:hidden">
         <div>
           <strong className="text-lg">{q ? inr(q.total) : "-"}</strong>
-          <div className="text-[13px] text-muted">{q?.nights ?? 0} nights, pay in full via Razorpay</div>
+          <div className="text-[13px] text-muted">{q?.nights ?? 0} nights, pay in full via Cashfree</div>
         </div>
         <button type="button" onClick={pay} disabled={paying} className="btn-primary min-h-12 rounded-[3px]">Book now</button>
       </div>
@@ -502,13 +494,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
             setPaying(false);
             setPayError("Payment didn't go through and no money was taken. Your dates are still available, try again.");
           }}
-          onSuccess={() =>
-            verifyAndFinish(mock, {
-              razorpay_order_id: mock.orderId,
-              razorpay_payment_id: `pay_mock_${mock.ref}`,
-              razorpay_signature: "mock",
-            })
-          }
+          onSuccess={() => verifyAndFinish(mock)}
         />
       ) : null}
     </div>

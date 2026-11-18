@@ -1,6 +1,6 @@
 # Ambattu Rehoboth Stays — website front end
 
-Next.js 15 (App Router) + TypeScript + Tailwind CSS v4. Booking with full payment through Razorpay.
+Next.js 15 (App Router) + TypeScript + Tailwind CSS v4. Booking with full payment through Cashfree.
 
 Design: layout and typography after tajhotels.com (serif headings, tracked uppercase labels, square buttons, gold ornaments), homestay details after voyehomes.com (amenity badges, trust strip, callback request). Fonts: Cormorant Garamond + Jost, self-hosted via @fontsource. Colours: the Rehoboth green palette in `src/app/globals.css`.
 
@@ -12,7 +12,7 @@ cp .env.example .env.local   # optional — the site runs without keys
 npm run dev                  # http://localhost:3000
 ```
 
-Without Razorpay keys the checkout runs in **mock mode**: a test payment window lets you simulate a successful or failed payment, so the whole flow can be demoed. Without an OTP provider, any 4-digit code is accepted.
+Without Cashfree keys the checkout runs in **mock mode**: a test payment window lets you simulate a successful or failed payment, so the whole flow can be demoed. Without an OTP provider, any 4-digit code is accepted.
 
 ## Pages
 
@@ -21,7 +21,7 @@ Without Razorpay keys the checkout runs in **mock mode**: a test payment window 
 | `/` | Homepage — hero slideshow + availability search, story, rooms (filter, save), experiences, food, offers (copy code), around us, reviews, FAQ, WhatsApp chat |
 | `/rooms` | All rooms with date and guest search |
 | `/rooms/[slug]` | Room detail — gallery, rate plans, add-ons, live price card |
-| `/book` | Checkout — edit trip, OTP login, guest details, GST invoice, coupons, full payment via Razorpay, cancellation timeline |
+| `/book` | Checkout — edit trip, OTP login, guest details, GST invoice, coupons, full payment via Cashfree, cancellation timeline |
 | `/book/confirmed` | Confirmation |
 | `/policies` | Payment & cancellation, house rules, privacy |
 
@@ -36,22 +36,20 @@ Everything in `[brackets]` is placeholder copy.
 - `src/lib/cancellation.ts` — refund rules (counted from booking date: 50% within 2 days, 25% until day 4, none from day 5)
 - Photos: replace the `<Photo>` placeholders with `next/image` once photos are in `public/photos/`
 
-## Payments (Razorpay)
+## Payments (Cashfree) and database (Cloudflare D1)
 
-1. Add `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET` to `.env.local` (test keys first).
-2. `POST /api/razorpay/order` recalculates the price on the server and creates an order for the full amount.
-3. The browser opens Razorpay Checkout; on success `POST /api/razorpay/verify` checks the signature.
+1. Add `CASHFREE_APP_ID`, `CASHFREE_SECRET_KEY` and `CASHFREE_ENV=sandbox` (test keys first), plus the `CF_*` database variables and `PII_ENCRYPTION_KEY` (see `.env.example`).
+2. `POST /api/pay/order` recalculates the price on the server, holds the dates in D1, and creates a Cashfree order for the full amount.
+3. The browser opens Cashfree's payment window. Afterwards `POST /api/pay/verify` asks Cashfree whether the order is paid; the browser is never trusted.
+4. The Cashfree webhook (`/api/pay/webhook`) and the return page (`/book/return`) confirm the same way, so a paid booking is saved even if the guest closes the tab.
+5. Create the tables with `db/schema.sql` (existing databases: `db/migrations/`).
 
-## Still needed from a backend
+## Still needed
 
-These are marked `TODO(backend)` in the code:
-
-- Live room availability before taking payment (`api/razorpay/order`)
-- Saving bookings, blocking dates, and sending WhatsApp/email confirmations (`api/razorpay/verify`)
-- A Razorpay `payment.captured` webhook, so bookings confirm even if the guest closes the tab
 - A real OTP provider (`api/otp/*`)
-- Loading the confirmation page from the saved booking instead of the URL
+- WhatsApp/email confirmations after payment
 - Processing refunds per the cancellation policy
+- The admin dashboard
 
 ## Deploy
 

@@ -17,7 +17,7 @@ export default function PoliciesPage() {
         <section id="cancellation" className="flex flex-col gap-4">
           <h2 className="font-display text-[28px] font-medium">Payment &amp; cancellation</h2>
           <p className="text-ink-soft">
-            The full amount is paid online at the time of booking through Razorpay. Nothing is due at check-in.
+            The full amount is paid online at the time of booking through Cashfree. Nothing is due at check-in.
           </p>
           <p className="text-ink-soft">Refunds are counted from the day you book, not from your check-in date:</p>
           <div className="overflow-x-auto rounded-xl border border-line">
@@ -33,7 +33,7 @@ export default function PoliciesPage() {
             </table>
           </div>
           <p className="text-sm text-muted">
-            Refunds go back to the original payment method through Razorpay within 5 to 7 working days. To cancel, message us on WhatsApp or call {site.phone} with your booking ID. Times are in IST.
+            Refunds go back to the original payment method through Cashfree within 5 to 7 working days. To cancel, message us on WhatsApp or call {site.phone} with your booking ID. Times are in IST.
           </p>
         </section>
 
@@ -57,7 +57,7 @@ export default function PoliciesPage() {
           </ul>
           <h3 className="font-display text-xl font-medium">Who we share it with</h3>
           <p className="text-ink-soft">
-            Razorpay processes your payment; card and UPI details go to Razorpay and are never stored by us. Your booking details are stored with our database and hosting providers (Cloudflare and Vercel), who handle them only for us. Phone, email, name and GST details are encrypted before they are stored. We do not sell your data.
+            Cashfree processes your payment; card and UPI details go to Cashfree and are never stored by us. Your booking details are stored with our database and hosting providers (Cloudflare and Vercel), who handle them only for us. Phone, email, name and GST details are encrypted before they are stored. We do not sell your data.
           </p>
           <h3 className="font-display text-xl font-medium">How long we keep it</h3>
           <p className="text-ink-soft">

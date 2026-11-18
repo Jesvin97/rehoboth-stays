@@ -3,14 +3,15 @@ import { quote } from "@/lib/pricing";
 import { getRoom } from "@/lib/rooms";
 import { todayIST } from "@/lib/dates";
 import { bookingRef, isCheckoutRequest } from "@/lib/booking-schema";
-import { createOrder, razorpayConfigured } from "@/lib/razorpay-server";
+import { cashfreeConfigured, cashfreeEnv, createOrder } from "@/lib/cashfree-server";
 import { d1Configured } from "@/lib/d1";
 import { piiConfigured } from "@/lib/pii";
 import { attachOrder, cancelBooking, createPendingBooking } from "@/lib/bookings";
+import { site } from "@/lib/site";
 
 /**
- * Creates a Razorpay order for the FULL amount of the stay.
- * The price is recalculated here — the amount shown in the browser is never trusted.
+ * Starts a payment: recalculates the price on the server (the amount shown in the
+ * browser is never trusted), holds the dates, and creates a Cashfree order for the FULL amount.
  */
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);
@@ -36,14 +37,15 @@ export async function POST(req: Request) {
   const ref = bookingRef();
   const room = getRoom(body.room)!;
 
-  // Demo mode (no Razorpay keys): nothing is saved and no money moves.
-  if (!razorpayConfigured()) {
-    return NextResponse.json({ mode: "mock", ref, orderId: `order_mock_${ref}`, amount: q.total, currency: "INR" });
+  // Demo mode (no Cashfree keys): nothing is saved and no money moves.
+  if (!cashfreeConfigured()) {
+    return NextResponse.json({ mode: "mock", ref, orderId: `order_mock_${ref}`, amount: q.total });
   }
 
-  // Live payments must never run without the database, or a paid stay could go unrecorded.
+  // Live payments must never run without the database and encryption key,
+  // or a paid stay could go unrecorded or guest data could be stored unprotected.
   if (!d1Configured() || !piiConfigured()) {
-    console.error("Razorpay is live but the database or PII_ENCRYPTION_KEY is not configured.");
+    console.error("Cashfree is live but the database or PII_ENCRYPTION_KEY is not configured.");
     return NextResponse.json({ error: "Online booking is temporarily unavailable. Please call us to book." }, { status: 503 });
   }
 
@@ -57,26 +59,24 @@ export async function POST(req: Request) {
   }
 
   try {
+    const email = body.guest.email?.trim();
     const order = await createOrder({
+      orderId: ref,
       amountRupees: q.total,
-      receipt: ref,
-      notes: {
-        booking_ref: ref,
-        room: room.name,
-        check_in: body.checkIn,
-        check_out: body.checkOut,
-        guests: `${body.adults}A ${body.children}C`,
+      customer: {
+        id: `guest_${ref.replace(/[^A-Za-z0-9]/g, "")}`,
+        phone: body.guest.phone,
+        name: body.guest.name.trim().slice(0, 100),
+        email: email && /^\S+@\S+\.\S+$/.test(email) ? email : undefined,
       },
+      // Cashfree needs an https return address; the modal flow works without one (local testing).
+      returnUrl: site.url.startsWith("https://") ? `${site.url}/book/return?ref=${ref}` : undefined,
+      expiresInMinutes: 20,
+      note: `${room.name}, ${body.checkIn} to ${body.checkOut}`,
     });
-    await attachOrder(ref, order.id);
-    return NextResponse.json({
-      mode: "live",
-      ref,
-      orderId: order.id,
-      amount: q.total,
-      currency: order.currency,
-      keyId: process.env.RAZORPAY_KEY_ID,
-    });
+    if (!order.payment_session_id) throw new Error("Cashfree returned no payment session");
+    await attachOrder(ref, String(order.cf_order_id));
+    return NextResponse.json({ mode: "live", ref, paymentSessionId: order.payment_session_id, env: cashfreeEnv(), amount: q.total });
   } catch (err) {
     console.error(err);
     await cancelBooking(ref).catch(() => {});

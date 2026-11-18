@@ -9,7 +9,7 @@ import { formatShort, parseISO } from "@/lib/dates";
 import { cancellationSchedule } from "@/lib/cancellation";
 import { site } from "@/lib/site";
 import type { SearchParams } from "@/lib/booking-params";
-import { razorpayConfigured } from "@/lib/razorpay-server";
+import { cashfreeConfigured } from "@/lib/cashfree-server";
 import { d1Configured } from "@/lib/d1";
 import { getBooking } from "@/lib/bookings";
 
@@ -27,7 +27,7 @@ const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) 
 export default async function ConfirmedPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const sp = await searchParams;
   const ref = one(sp.ref);
-  const live = razorpayConfigured() && d1Configured();
+  const live = cashfreeConfigured() && d1Configured();
   const saved = live && ref ? await getBooking(ref).catch(() => null) : null;
   if (live && saved?.status !== "paid") redirect("/");
 
@@ -72,7 +72,7 @@ export default async function ConfirmedPage({ searchParams }: { searchParams: Pr
               <div><dt className="text-[13px] text-muted">Check-in</dt><dd className="font-semibold">{formatShort(checkIn)}</dd><dd className="text-[13px] text-muted">from {site.checkInTime}</dd></div>
               <div><dt className="text-[13px] text-muted">Check-out</dt><dd className="font-semibold">{formatShort(checkOut)}</dd><dd className="text-[13px] text-muted">by {site.checkOutTime}</dd></div>
               <div><dt className="text-[13px] text-muted">Guests</dt><dd className="font-semibold">{guests}</dd></div>
-              <div><dt className="text-[13px] text-muted">Paid in full</dt><dd className="font-semibold">{inr(total)}</dd><dd className="break-all text-[13px] text-muted">{one(sp.pay)}</dd></div>
+              <div><dt className="text-[13px] text-muted">Paid in full</dt><dd className="font-semibold">{inr(total)}</dd><dd className="break-all text-[13px] text-muted">{saved?.provider_payment_id ?? one(sp.pay)}</dd></div>
             </dl>
             <p className="border-t border-line-soft pt-3 text-sm text-muted">
               Need to cancel? 50% refund until {formatShort(policy.fiftyUntil)}, 25% until {formatShort(policy.quarterUntil)}, no refund from {formatShort(policy.noRefundFrom)}.
