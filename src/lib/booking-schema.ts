@@ -43,7 +43,8 @@ export function isCheckoutRequest(x: unknown): x is CheckoutRequest {
     typeof g.name === "string" &&
     g.name.trim().length > 1 &&
     typeof g.phone === "string" &&
-    /^[6-9]\d{9}$/.test(g.phone)
+    /^[6-9]\d{9}$/.test(g.phone) &&
+    (g.otherPhone == null || g.otherPhone === "" || (typeof g.otherPhone === "string" && /^[6-9]\d{9}$/.test(g.otherPhone)))
   );
 }
 

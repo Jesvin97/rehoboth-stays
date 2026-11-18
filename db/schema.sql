@@ -29,7 +29,13 @@ CREATE TABLE IF NOT EXISTS bookings (
   hold_expires_at     INTEGER NOT NULL,         -- a pending booking blocks the dates until then
   paid_at             INTEGER,
   consent_at          INTEGER,                  -- when the guest agreed to the privacy notice
-  consent_version     TEXT                      -- which version of the notice they agreed to
+  consent_version     TEXT,                     -- which version of the notice they agreed to
+  cancelled_at        INTEGER,                  -- when the booking was cancelled
+  cancel_reason       TEXT,                     -- guest | dates_unavailable
+  refund_percent      INTEGER,
+  refund_amount       INTEGER,                  -- rupees
+  refund_id           TEXT,                     -- our refund id, also sent to Cashfree (makes retries safe)
+  refund_status       TEXT                      -- none | pending | processing | processed | failed
 );
 CREATE INDEX IF NOT EXISTS idx_bookings_dates ON bookings (check_in, check_out);
 CREATE INDEX IF NOT EXISTS idx_bookings_room ON bookings (room, status);

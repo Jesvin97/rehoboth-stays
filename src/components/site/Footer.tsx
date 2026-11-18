@@ -5,7 +5,7 @@ import { Logo } from "./Logo";
 const cols = [
   { title: "Stay", links: [{ href: "/rooms", label: "Rooms & cottages" }, { href: "/rooms/whole-home", label: "Book the whole home" }] },
   { title: "Discover", links: [{ href: "/#experiences", label: "Experiences" }, { href: "/#dining", label: "Dining" }, { href: "/#around", label: "Getting here" }] },
-  { title: "Help", links: [{ href: "/#faq", label: "FAQs" }, { href: "/policies#cancellation", label: "Cancellation & refunds" }, { href: "/policies#rules", label: "House rules" }, { href: "/policies#privacy", label: "Privacy" }] },
+  { title: "Help", links: [{ href: "/#faq", label: "FAQs" }, { href: "/policies#cancellation", label: "Cancellation & refunds" }, { href: "/book/cancel", label: "Cancel a booking" }, { href: "/policies#rules", label: "House rules" }, { href: "/policies#privacy", label: "Privacy" }] },
 ];
 
 export function Footer() {

@@ -14,7 +14,10 @@ export function StaySearch({ initial }: { initial: Stay }) {
   const n = nightsBetween(s.checkIn, s.checkOut);
   const today = todayIST();
 
-  const apply = (next: Stay) => {
+  const apply = (raw: Stay) => {
+    // A typed date in the past is moved to today, so the page always shows dates that can be booked.
+    const checkIn = raw.checkIn < today ? today : raw.checkIn;
+    const next = { ...raw, checkIn, checkOut: nightsBetween(checkIn, raw.checkOut) < 1 ? addDays(checkIn, 1) : raw.checkOut };
     setS(next);
     if (nightsBetween(next.checkIn, next.checkOut) >= 1) router.replace(`/rooms?${stayQuery(next)}`, { scroll: false });
   };

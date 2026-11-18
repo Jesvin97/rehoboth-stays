@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { whatsappLink } from "@/lib/site";
 import { Consent } from "../ui/Consent";
+import { cleanPhone, isValidMobile } from "@/lib/phone";
 
 const times = ["Morning (9 to 12)", "Afternoon (12 to 4)", "Evening (4 to 8)"];
 
@@ -17,12 +18,12 @@ export function Callback() {
   const [err, setErr] = useState("");
   const [sent, setSent] = useState(false);
   const [consent, setConsent] = useState(false);
-  const digits = phone.replace(/\D/g, "").slice(-10);
+  const digits = phone;
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (name.trim().length < 2) return setErr("Please add your name.");
-    if (!/^[6-9]\d{9}$/.test(digits)) return setErr("Enter a valid 10-digit mobile number.");
+    if (!isValidMobile(digits)) return setErr("Enter a valid 10-digit mobile number.");
     if (!consent) return setErr("Please tick the box to agree before we call you.");
     setErr("");
     fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: "callback", name: name.trim(), phone: digits, note: time, consent: true }) }).catch(() => {});
@@ -46,7 +47,7 @@ export function Callback() {
       <label className="sr-only" htmlFor="cb-name">Your name</label>
       <input id="cb-name" className={input} placeholder="Your name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
       <label className="sr-only" htmlFor="cb-phone">Mobile number</label>
-      <input id="cb-phone" className={input} type="tel" inputMode="numeric" placeholder="Mobile number" autoComplete="tel-national" value={phone} onChange={(e) => setPhone(e.target.value)} />
+      <input id="cb-phone" className={input} type="tel" inputMode="numeric" placeholder="10-digit mobile number" autoComplete="tel-national" value={phone} onChange={(e) => setPhone(cleanPhone(e.target.value))} />
       <label className="sr-only" htmlFor="cb-time">Best time to call</label>
       <select id="cb-time" className={`${input} [&>option]:text-ink`} value={time} onChange={(e) => setTime(e.target.value)}>
         {times.map((t) => <option key={t}>{t}</option>)}

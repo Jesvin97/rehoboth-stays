@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { plans, type Room } from "@/lib/rooms";
 import { addOns, inr, quote } from "@/lib/pricing";
-import { addDays, nightsBetween, todayIST } from "@/lib/dates";
+import { addDays, formatShort, nightsBetween, todayIST } from "@/lib/dates";
 import { selectionQuery, type BookingSelection } from "@/lib/booking-params";
-import { cancellationSchedule } from "@/lib/cancellation";
-import { formatShort } from "@/lib/dates";
+import { refundLabel, refundPercent } from "@/lib/cancellation";
 import { Stepper } from "../ui/Stepper";
+import { useBookedRanges, useUnavailableRooms } from "@/lib/use-availability";
 
 /**
  * Left column: rate plans + add-ons. Right column: live price card.
@@ -23,7 +23,9 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
   const set = (patch: Partial<BookingSelection>) => setSel((s) => ({ ...s, ...patch }));
   const q = quote({ roomSlug: room.slug, plan: sel.plan, checkIn: sel.checkIn, checkOut: sel.checkOut, adults: sel.adults, children: sel.children, addOns: sel.addOns });
   const today = todayIST();
-  const policy = cancellationSchedule(today);
+  const { unavailable } = useUnavailableRooms(sel.checkIn, sel.checkOut);
+  const isBooked = unavailable.includes(room.slug);
+  const bookedRanges = useBookedRanges(room.slug);
 
   return (
     <div className="flex flex-wrap items-start gap-12">
@@ -134,17 +136,29 @@ export function RoomBooking({ room, initial, children }: { room: Room; initial: 
           <p role="alert" className="rounded-[3px] bg-error-bg px-3 py-2.5 text-sm text-error-ink">{q.error}</p>
         )}
 
-        {q.ok ? (
+        {isBooked ? (
+          <p role="alert" className="rounded-[3px] bg-error-bg px-3 py-2.5 text-sm text-error-ink">
+            Sorry, {room.name} is booked for these dates. Please try other dates, or look at our other rooms.
+          </p>
+        ) : null}
+
+        {q.ok && !isBooked ? (
           <Link href={`/book?${selectionQuery(sel)}`} className="btn-primary min-h-[52px] rounded-xl no-underline">
             Reserve now
           </Link>
         ) : (
           <button type="button" disabled className="btn-primary min-h-[52px] rounded-xl">Reserve now</button>
         )}
+        {bookedRanges.length ? (
+          <p className="text-[13px] text-muted">
+            Already booked: {bookedRanges.slice(0, 6).map((r) => `${formatShort(r.from)} to ${formatShort(r.to)}`).join(", ")}
+            {bookedRanges.length > 6 ? " and more" : ""}.
+          </p>
+        ) : null}
         <p className="text-center text-[13px] text-muted">
           Full payment at booking, secured by Cashfree
           <br />
-          Book today: 50% refund until {formatShort(policy.fiftyUntil)}
+          If you cancel today: {refundLabel(refundPercent(sel.checkIn, today))}. The earlier you cancel, the more you get back.
         </p>
       </aside>
     </div>

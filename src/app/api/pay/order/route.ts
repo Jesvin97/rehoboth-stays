@@ -71,7 +71,7 @@ export async function POST(req: Request) {
       },
       // Cashfree needs an https return address; the modal flow works without one (local testing).
       returnUrl: site.url.startsWith("https://") ? `${site.url}/book/return?ref=${ref}` : undefined,
-      expiresInMinutes: 20,
+      expiresInMinutes: 16, // shorter than the 25-minute date hold, so no payment can land after the hold ends
       note: `${room.name}, ${body.checkIn} to ${body.checkOut}`,
     });
     if (!order.payment_session_id) throw new Error("Cashfree returned no payment session");

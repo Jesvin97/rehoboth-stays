@@ -26,6 +26,7 @@ export async function POST(req: Request) {
   });
   if (result === "paid") return NextResponse.json({ ok: true, mode: "live" });
   if (result === "pending") return NextResponse.json({ ok: false, pending: true, error: "Payment is not confirmed yet." }, { status: 202 });
+  if (result === "refunded") return NextResponse.json({ ok: false, refunded: true, error: "Sorry, these dates were taken by another guest while you were paying. Your payment is being refunded in full (5 to 7 working days)." }, { status: 409 });
   if (result === "needs_review") return NextResponse.json({ ok: false, error: "Payment received but the booking needs a quick check. We will contact you." }, { status: 409 });
   return NextResponse.json({ ok: false, error: "Payment could not be verified." }, { status: 400 });
 }

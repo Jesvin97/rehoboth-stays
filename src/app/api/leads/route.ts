@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   if (b.consent !== true) return NextResponse.json({ ok: false }, { status: 400 });
 
   const name = b.name?.trim().slice(0, 100) || null;
-  const phone = b.phone?.replace(/\D/g, "").slice(-10) || null;
+  const phone = b.phone?.replace(/\D/g, "") || null; // must be exactly 10 digits; no trimming
   if (!name || !phone || !/^[6-9]\d{9}$/.test(phone)) return NextResponse.json({ ok: false }, { status: 400 });
 
   // Without a database the form still works (the callback also opens WhatsApp).

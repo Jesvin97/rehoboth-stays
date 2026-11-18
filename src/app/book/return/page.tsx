@@ -25,7 +25,9 @@ export default async function ReturnPage({ searchParams }: { searchParams: Promi
   const message =
     result === "pending"
       ? { h: "We're still confirming your payment", p: "This can take a minute. Refresh this page. If money was deducted, you do not need to pay again." }
-      : result === "needs_review"
+      : result === "refunded"
+        ? { h: "These dates were just taken", p: "Another guest booked these dates while you were paying. Your payment is being refunded in full to the original payment method in 5 to 7 working days." }
+        : result === "needs_review"
         ? { h: "Payment received, one quick check needed", p: "Your payment went through but the dates need a quick check by our team. We will contact you shortly." }
         : { h: "The payment didn't go through", p: "No booking was made. You can go back and try again." };
 

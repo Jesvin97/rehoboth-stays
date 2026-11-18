@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { roomFilters } from "@/lib/content";
 import { rooms } from "@/lib/rooms";
 import { RoomCard } from "../rooms/RoomCard";
+import { useUnavailableRooms } from "@/lib/use-availability";
 
 type FilterId = (typeof roomFilters)[number]["id"];
 const SAVED_KEY = "rehoboth:saved-rooms";
@@ -31,9 +32,10 @@ export function useSavedRooms() {
   return { saved, toggle };
 }
 
-export function RoomsSection({ query = "", centered = false }: { query?: string; centered?: boolean }) {
+export function RoomsSection({ query = "", centered = false, checkIn = "", checkOut = "" }: { query?: string; centered?: boolean; checkIn?: string; checkOut?: string }) {
   const [filter, setFilter] = useState<FilterId>("all");
   const { saved, toggle } = useSavedRooms();
+  const { unavailable } = useUnavailableRooms(checkIn, checkOut);
   const list = rooms.filter((r) => filter === "all" || r.tags.includes(filter));
 
   return (
@@ -55,7 +57,7 @@ export function RoomsSection({ query = "", centered = false }: { query?: string;
       </div>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10">
         {list.map((r) => (
-          <RoomCard key={r.slug} room={r} query={query} saved={saved.includes(r.slug)} onToggleSave={() => toggle(r.slug)} />
+          <RoomCard key={r.slug} room={r} query={query} booked={unavailable.includes(r.slug)} saved={saved.includes(r.slug)} onToggleSave={() => toggle(r.slug)} />
         ))}
       </div>
       <p className={`text-sm text-muted ${centered ? "text-center" : ""}`} aria-live="polite">

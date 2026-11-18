@@ -4,8 +4,11 @@ import type { CheckoutRequest } from "./booking-schema";
 import { decryptPII, encryptPII } from "./pii";
 import { PRIVACY_VERSION } from "./site";
 
-/** How long an unpaid booking holds its dates while the guest pays. */
-const HOLD_MS = 20 * 60 * 1000;
+/**
+ * How long an unpaid booking holds its dates while the guest pays. The Cashfree order expires
+ * earlier (16 minutes), so a payment can never complete after the hold has ended.
+ */
+const HOLD_MS = 25 * 60 * 1000;
 
 export type BookingRow = {
   ref: string;
@@ -22,6 +25,12 @@ export type BookingRow = {
   created_at: number;
   provider_order_id: string | null;
   provider_payment_id: string | null;
+  cancelled_at: number | null;
+  cancel_reason: string | null;
+  refund_percent: number | null;
+  refund_amount: number | null;
+  refund_id: string | null;
+  refund_status: string | null;
 };
 
 /**
@@ -109,4 +118,62 @@ export async function logPaymentEvent(e: { ref: string | null; event: string; or
     `INSERT OR IGNORE INTO payment_events (booking_ref, event, order_id, payment_id, amount_paise, raw, created_at) VALUES (?,?,?,?,?,?,?)`,
     [e.ref, e.event, e.orderId, e.paymentId, e.amountPaise, e.raw.slice(0, 20000), Date.now()],
   );
+}
+
+/**
+ * Cancels a booking and records the refund, in ONE atomic step, so a booking can only ever be
+ * cancelled (and refunded) once, even if two requests arrive together. Cancelled bookings free their dates.
+ * `from` is the status the booking must currently have: "paid" for a guest cancellation,
+ * "needs_review" when the dates were lost while the guest was paying.
+ * Returns false if the booking was no longer in that status.
+ */
+export async function claimCancellation(
+  ref: string,
+  p: { from: "paid" | "needs_review"; reason: "guest" | "dates_unavailable"; percent: number; amount: number; refundId: string },
+): Promise<boolean> {
+  const r = await d1(
+    `UPDATE bookings SET status = 'cancelled', cancelled_at = ?, cancel_reason = ?, refund_percent = ?, refund_amount = ?, refund_id = ?, refund_status = ?
+     WHERE ref = ? AND status = ?`,
+    [Date.now(), p.reason, p.percent, p.amount, p.refundId, p.amount > 0 ? "pending" : "none", ref, p.from],
+  );
+  return r.meta.changes > 0;
+}
+
+export async function setRefundStatus(ref: string, status: "pending" | "processing" | "processed" | "failed") {
+  await d1("UPDATE bookings SET refund_status = ? WHERE ref = ? AND status = 'cancelled'", [status, ref]);
+}
+
+/** A booking blocks dates while it is paid, or while an unpaid hold is still running. */
+const ACTIVE = "(status = 'paid' OR (status = 'pending' AND hold_expires_at > ?))";
+
+/**
+ * Which rooms are NOT available for these dates. The whole home clashes with every room, and every
+ * room clashes with the whole home. Cancelled bookings no longer count, so their dates open up again at once.
+ */
+export async function getUnavailableRooms(checkIn: string, checkOut: string, allRooms: string[]): Promise<string[]> {
+  const r = await d1<{ room: string }>(
+    `SELECT DISTINCT room FROM bookings WHERE check_in < ? AND check_out > ? AND ${ACTIVE}`,
+    [checkOut, checkIn, Date.now()],
+  );
+  const booked = new Set(r.results.map((x) => x.room));
+  if (booked.size === 0) return [];
+  if (booked.has("whole-home")) return allRooms; // the whole house is taken: nothing else is free
+  return allRooms.filter((room) => booked.has(room) || (room === "whole-home" && booked.size > 0));
+}
+
+/** Date ranges already taken for a room (no guest details), for showing "booked" dates. */
+export async function getBookedRanges(room: string, fromDate: string): Promise<{ from: string; to: string }[]> {
+  const r = await d1<{ check_in: string; check_out: string }>(
+    `SELECT check_in, check_out FROM bookings WHERE check_out > ? AND ${ACTIVE}
+       AND (? = 'whole-home' OR room = ? OR room = 'whole-home') ORDER BY check_in`,
+    [fromDate, Date.now(), room, room],
+  );
+  // Merge back-to-back or overlapping ranges into one.
+  const out: { from: string; to: string }[] = [];
+  for (const b of r.results) {
+    const last = out[out.length - 1];
+    if (last && b.check_in <= last.to) last.to = b.check_out > last.to ? b.check_out : last.to;
+    else out.push({ from: b.check_in, to: b.check_out });
+  }
+  return out;
 }

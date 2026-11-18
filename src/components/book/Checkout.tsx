@@ -6,13 +6,15 @@ import { useMemo, useState } from "react";
 import { plans, type Room } from "@/lib/rooms";
 import { addOns, inr, quote } from "@/lib/pricing";
 import { addDays, formatShort, nightsBetween, todayIST } from "@/lib/dates";
-import { cancellationSchedule } from "@/lib/cancellation";
+import { RefundTimeline } from "../ui/RefundTimeline";
 import { houseRules } from "@/lib/content";
 import { site } from "@/lib/site";
 import type { BookingSelection } from "@/lib/booking-params";
 import type { CheckoutRequest } from "@/lib/booking-schema";
 import { loadCashfree, openCashfree } from "@/lib/cashfree-client";
 import { Consent } from "../ui/Consent";
+import { cleanPhone, isValidMobile } from "@/lib/phone";
+import { useUnavailableRooms } from "@/lib/use-availability";
 import { Stepper } from "../ui/Stepper";
 import { ChevronLeft, Lock } from "../ui/Icons";
 import { PriceSummary } from "./PriceSummary";
@@ -64,21 +66,25 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
   const [payError, setPayError] = useState("");
   const [mock, setMock] = useState<OrderResponse | null>(null);
 
-  const digits = phone.replace(/\D/g, "").slice(-10);
+  const digits = phone; // already cleaned to at most 10 digits as the guest types
   const plan = plans.find((p) => p.id === initial.plan)!;
   const q = useMemo(() => {
     const r = quote({ roomSlug: room.slug, plan: initial.plan, checkIn, checkOut, adults, children, addOns: initial.addOns, coupon });
     return r.ok ? r : null;
   }, [room.slug, initial.plan, initial.addOns, checkIn, checkOut, adults, children, coupon]);
   const datesValid = nightsBetween(checkIn, checkOut) >= 1 && checkIn >= today;
-  const policy = cancellationSchedule(today);
   const guestLabel = `${adults} ${adults === 1 ? "adult" : "adults"}${children ? `, ${children} ${children === 1 ? "child" : "children"}` : ""}`;
+
+  const { unavailable } = useUnavailableRooms(datesValid ? checkIn : "", datesValid ? checkOut : "");
+  const datesBooked = unavailable.includes(room.slug);
 
   const missing: string[] = [];
   if (!datesValid || !q) missing.push("valid dates");
+  if (datesBooked) missing.push("dates that are still available");
   if (!verified) missing.push("mobile verification");
   if (name.trim().length < 2) missing.push("your name");
   if (bookingFor === "other" && otherName.trim().length < 2) missing.push("the guest's name");
+  if (bookingFor === "other" && otherPhone && !isValidMobile(otherPhone)) missing.push("a valid 10-digit mobile number for the guest");
   if (!agree) missing.push("agreeing to the house rules");
   if (!consent) missing.push("consent to the privacy notice");
 
@@ -90,7 +96,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
 
   async function sendOtp() {
     setOtpError("");
-    if (!/^[6-9]\d{9}$/.test(digits)) return setOtpError("Enter a valid 10-digit mobile number.");
+    if (!isValidMobile(digits)) return setOtpError("Enter a valid 10-digit mobile number.");
     setOtpBusy(true);
     const res = await fetch("/api/otp/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ phone: digits }) }).catch(() => null);
     setOtpBusy(false);
@@ -128,20 +134,22 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
   }
 
   /** Asks the server to confirm the payment with Cashfree. */
-  async function confirmWithServer(order: OrderResponse): Promise<boolean> {
+  async function confirmWithServer(order: OrderResponse): Promise<{ ok: boolean; message?: string }> {
     const res = await fetch("/api/pay/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(order.mode === "mock" ? { ref: order.ref, mockOrderId: order.orderId } : { ref: order.ref }),
     }).catch(() => null);
     const data = await res?.json().catch(() => null);
-    return Boolean(res?.ok && data?.ok);
+    // `refunded` means the dates were taken while the guest paid: they are refunded automatically.
+    return { ok: Boolean(res?.ok && data?.ok), message: data?.refunded ? String(data.error) : undefined };
   }
 
   async function verifyAndFinish(order: OrderResponse) {
-    if (!(await confirmWithServer(order))) {
+    const r = await confirmWithServer(order);
+    if (!r.ok) {
       setPaying(false);
-      setPayError(`We couldn't confirm the payment yet. If money was deducted, don't pay again: contact us on ${site.phone} with reference ${order.ref}.`);
+      setPayError(r.message ?? `We couldn't confirm the payment yet. If money was deducted, don't pay again: contact us on ${site.phone} with reference ${order.ref}.`);
       return;
     }
     router.push(confirmedUrl(order.ref));
@@ -199,8 +207,10 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
     const result = await openCashfree(order.paymentSessionId, order.env).catch(() => undefined);
     if (result?.error) {
       // Window closed or payment failed. Check once in case the payment actually went through.
-      if (await confirmWithServer(order)) return router.push(confirmedUrl(order.ref));
+      const r = await confirmWithServer(order);
+      if (r.ok) return router.push(confirmedUrl(order.ref));
       setPaying(false);
+      if (r.message) return setPayError(r.message);
       setPayError("Payment didn't go through and no money was taken. Your dates are held for a few minutes, try again.");
       return;
     }
@@ -267,6 +277,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
                 </label>
               </div>
             ) : null}
+            {datesBooked ? <p role="alert" className="rounded-[3px] bg-error-bg px-3 py-2.5 text-sm text-error-ink">Sorry, these dates have just been booked. Please choose other dates.</p> : null}
             {!datesValid ? <p role="alert" className="rounded-[3px] bg-error-bg px-3 py-2.5 text-sm text-error-ink">Check-out must be after check-in, and check-in can&apos;t be in the past.</p> : null}
 
             <div className="flex items-start justify-between gap-4 border-t border-line-soft pt-4">
@@ -315,7 +326,8 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
                 <div className="flex flex-wrap items-end gap-2.5">
                   <label className="field-label flex-[1_1_220px]">
                     Mobile number
-                    <input className="field" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="98xxx xxxxx" value={phone} onChange={(e) => { setPhone(e.target.value); setOtpError(""); }} />
+                    <input className="field" type="tel" inputMode="numeric" autoComplete="tel-national" placeholder="10-digit mobile number" aria-describedby="phone-hint" value={phone} onChange={(e) => { setPhone(cleanPhone(e.target.value)); setOtpError(""); }} />
+                    <span id="phone-hint" className="text-[13px] font-normal normal-case tracking-normal text-muted">{phone.length}/10 digits</span>
                   </label>
                   <button type="button" className="btn-primary min-h-[46px] rounded-[3px]" onClick={sendOtp} disabled={otpBusy}>
                     {otpSent ? "Resend OTP" : "Send OTP"}
@@ -359,7 +371,7 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
                 </label>
                 <label className="field-label">
                   Guest&apos;s mobile
-                  <input className="field" type="tel" placeholder="+91" value={otherPhone} onChange={(e) => setOtherPhone(e.target.value)} />
+                  <input className="field" type="tel" inputMode="numeric" placeholder="10-digit mobile number" value={otherPhone} onChange={(e) => setOtherPhone(cleanPhone(e.target.value))} />
                 </label>
               </div>
             ) : null}
@@ -428,21 +440,8 @@ export function Checkout({ room, initial }: { room: Room; initial: BookingSelect
           {/* Cancellation */}
           <section className="card" aria-labelledby="cancel-h">
             <h2 id="cancel-h" className="font-display text-2xl font-medium">Cancellation policy</h2>
-            <p className="text-ink-soft">Counted from the day you book. If you book today ({formatShort(today)}):</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3">
-              <div className="border-t-[5px] border-accent py-3 sm:pr-3">
-                <div className="font-semibold">50% refund</div>
-                <div className="text-sm text-muted">Cancel until {formatShort(policy.fiftyUntil)}</div>
-              </div>
-              <div className="border-t-[5px] border-gold py-3 sm:px-3">
-                <div className="font-semibold">25% refund</div>
-                <div className="text-sm text-muted">{formatShort(policy.quarterFrom)} to {formatShort(policy.quarterUntil)}</div>
-              </div>
-              <div className="border-t-[5px] border-rust py-3 sm:pl-3">
-                <div className="font-semibold">No refund</div>
-                <div className="text-sm text-muted">From {formatShort(policy.noRefundFrom)}</div>
-              </div>
-            </div>
+            <p className="text-ink-soft">The refund depends on how many days before check-in ({formatShort(checkIn)}) you cancel. You can cancel online any time until the check-in day, using your booking ID and mobile number.</p>
+            <RefundTimeline checkIn={checkIn} today={today} />
             <p className="text-sm text-muted">Refunds go back through Cashfree to the original payment method in 5 to 7 working days. Times in IST.</p>
           </section>
 

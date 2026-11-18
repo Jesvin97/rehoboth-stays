@@ -1,5 +1,5 @@
 import { EXTRA_ADULT_PER_NIGHT, getRoom, type PlanId } from "./rooms";
-import { nightsBetween } from "./dates";
+import { nightsBetween, parseISO, todayIST } from "./dates";
 
 /**
  * Pricing is shared by the browser (to show the summary) and the server
@@ -68,6 +68,9 @@ export function couponDiscount(code: string, roomCost: number, nights: number): 
 export function quote(input: QuoteInput): Quote | QuoteError {
   const room = getRoom(input.roomSlug);
   if (!room) return { ok: false, error: "Room not found." };
+  if (!parseISO(input.checkIn) || !parseISO(input.checkOut)) return { ok: false, error: "Please choose valid dates." };
+  // Today is allowed (same-day booking); earlier days never are. Checked here so the browser and the server agree.
+  if (input.checkIn < todayIST()) return { ok: false, error: "Check-in can't be in the past." };
   const nights = nightsBetween(input.checkIn, input.checkOut);
   if (nights < 1) return { ok: false, error: "Check-out must be after check-in." };
   if (nights > 30) return { ok: false, error: "Stays longer than 30 nights, please contact us." };
